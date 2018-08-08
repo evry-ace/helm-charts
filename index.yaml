@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  nodejs:
+  - apiVersion: v1
+    created: 2018-08-08T10:43:27.188099+02:00
+    description: A Helm chart for Kubernetes
+    digest: 068cec84b28ccb95cdec079672b653997dd1d278d35d29ebb344b5a65b86c631
+    name: nodejs
+    urls:
+    - release/nodejs-1.0.0.tgz
+    version: 1.0.0
+generated: 2018-08-08T10:43:27.186882+02:00

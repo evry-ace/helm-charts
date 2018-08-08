@@ -1,0 +1,73 @@
+# Default values for jetty
+
+appEnv: "development"
+name: ""
+
+localTime: true
+disableServiceAccountToken: true
+
+annotations: {}
+
+label: {}
+
+replicaCount: 1
+revisionHistoryLimit: 5
+
+image:
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  role: backend
+  http:
+    internalPort: 8080
+    externalPort: 80
+  https:
+    enabled: false
+    internalPort: 8433
+    externalPort: 433
+  metrics:
+    scrape: true
+    port: 31500
+    path: /metrics
+    scheme: http
+
+meta:
+  git: {}
+  jenkins: {}
+  contact: {}
+
+ingress:
+  enabled: false
+  path: /
+  hosts: []
+
+  annotations:
+    kubernetes.io/ingress.class: traefik
+
+environment: {}
+secrets: {}
+
+probe:
+  path: /health
+  liveness:
+    initialDelaySeconds: 300
+    periodSeconds: 30
+    timeoutSeconds: 30
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 120
+    periodSeconds: 60
+    timeoutSeconds: 10
+    failureThreshold: 10
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 56Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+configPath: /etc/
+configFiles: {}

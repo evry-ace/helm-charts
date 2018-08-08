@@ -1,0 +1,4 @@
+dependencies:
+  - name: common
+    version: ^1.0.0
+    repository: https://testapps.fiskeridirektoratet.no/helm-charts

@@ -1,0 +1,7 @@
+{{- if .Values.configFiles }}
+apiVersion: v1
+kind: ConfigMap
+{{ template "common.metadata" . }}
+data:
+{{ toYaml .Values.configFiles | indent 2 }}
+{{- end }}

@@ -1,0 +1,147 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+    role: {{ .Values.service.role }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{ if or .Values.meta.contact .Values.meta.git .Values.meta.jenkins }}
+  annotations:
+  {{- if .Values.meta.contact }}
+    {{- range $key, $value := .Values.meta.contact }}
+    app.fiskeridir.no/{{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 4 }}
+  {{- end }}
+  {{- if .Values.meta.jenkins }}
+{{ toYaml .Values.meta.jenkins | indent 4 }}
+  {{- end }}
+  {{- if .Values.meta.git }}
+{{ toYaml .Values.meta.git | indent 4 }}
+  {{- end }}
+  {{- end }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.image }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.http.internalPort }}
+          protocol: TCP
+        {{- if .Values.service.https.enabled }}
+        - containerPort: {{ .Values.service.https.internalPort }}
+          protocol: TCP
+        {{- end}}
+        {{- if (and .Values.service.metrics.enabled (ne .Values.service.metrics.port .Values.service.http.internalPort))}}
+        - containerPort: {{ .Values.service.metrics.port }}
+          protocol: TCP
+        {{- end }}
+
+        {{- if .Values.localTime }}
+        # Sett container time to local time not UTC
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        {{- end }}
+        
+        {{- if .Values.configFiles }}
+        # Mount config files to destination
+        volumeMounts:
+        - name: config-map
+          mountPath: {{ .Values.configPath }}
+        {{- end }}
+
+        # Allocated resources
+        # https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+
+        # Pod liveness check
+        # https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+        # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probe.path }}
+            port: {{ .Values.service.http.internalPort }}
+          initialDelaySeconds: {{ .Values.probe.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probe.liveness.periodSeconds }}
+          timeoutSeconds: {{ .Values.probe.liveness.timeoutSeconds }}
+          failureThreshold: {{ .Values.probe.liveness.failureThreshold }}
+
+        # Pod readiness check
+        # https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+        # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probe.path }}
+            port: {{ .Values.service.http.internalPort }}
+          initialDelaySeconds: {{ .Values.probe.readiness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probe.readiness.timeoutSeconds }}
+
+        # Environment variables
+        env:
+        - name: APP_ENV
+          value: {{ .Values.appEnv }}
+        {{- if .Values.secrets }}
+{{ toYaml .Values.secrets | indent 8 }}
+        {{- end }}
+        {{- if .Values.environment }}
+{{ toYaml .Values.environment | indent 8 }}
+        {{- end }}
+
+      # Timeout for graceful shutdown
+      # https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+      terminationGracePeriodSeconds: 60
+
+      # Assigning Pods to Nodes
+      # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+
+      # Disable Service Account Tokens
+      # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+      {{- if .Values.disableServiceAccountToken }}
+      automountServiceAccountToken: false
+      {{- end }}
+
+      {{- if .Values.localTime }}
+      # Localtime volume
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+      {{- end }}
+
+      {{- if .Values.configFiles }}
+      # ConfigMap Volume
+      volumes:
+      - name: config-map
+        configMap:
+          name: {{ .Values.name }}
+      {{- end }}
