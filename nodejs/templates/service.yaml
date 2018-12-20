@@ -1,46 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.name }}
+  name: {{ template "nodejs.fullname" . }}
   labels:
-    app: {{ .Values.name }}
-    role: {{ .Values.service.role }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "nodejs.name" . }}
+    chart: {{ template "nodejs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  annotations:
-  {{- if .Values.meta.contact }}
-    {{- range $key, $value := .Values.meta.contact }}
-    app.fiskeridir.no/{{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- end }}
-  {{- if .Values.annotations }}
-{{ toYaml .Values.annotations | indent 4 }}
-  {{- end }}
-  {{- if .Values.meta.jenkins }}
-{{ toYaml .Values.meta.jenkins | indent 4 }}
-  {{- end }}
-  {{- if .Values.meta.git }}
-{{ toYaml .Values.meta.git | indent 4 }}
-  {{- end }}
-  {{- if .Values.service.metrics.scrape }}
-    {{- range $key, $value := .Values.service.metrics }}
-    prometheus.io/{{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- end }}
 spec:
+  type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.http.externalPort }}
-    targetPort: {{ .Values.service.http.internalPort }}
-    protocol: TCP
-    name: http
-  {{- if .Values.service.https.enabled }}
-  - port: {{ .Values.service.https.externalPort }}
-    targetPort: {{ .Values.service.https.intenalPort }}
-    protocol: TCP
-    name: https
-  {{- end }}
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
-    app: {{ .Values.name }}
+    app: {{ template "nodejs.name" . }}
     release: {{ .Release.Name }}
-

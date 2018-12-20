@@ -1,35 +1,38 @@
 {{- if .Values.ingress.enabled -}}
-{{- $root := . }}
+{{- $fullName := include "nodejs.fullname" . -}}
+{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Values.name }}
+  name: {{ $fullName }}
   labels:
-    app: {{ .Values.name }}
-    role: {{ .Values.service.role }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "nodejs.name" . }}
+    chart: {{ template "nodejs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
   annotations:
-  {{- if .Values.annotations }}
-{{ toYaml .Values.annotations | indent 4 }}
-  {{- end }}
-  {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  rules:
-  {{- range $host := .Values.ingress.hosts }}
-  - host: {{ $host }}
-    http:
-      paths:
-      - path: {{ $root.Values.ingress.path }}
-        backend:
-          serviceName: {{ $root.Values.name }}
-          servicePort: {{ $root.Values.service.http.externalPort }}
-  {{- end }}
-  {{- if .Values.ingress.tls }}
+{{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
-{{- end -}}
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+  {{- end }}
+{{- end }}
