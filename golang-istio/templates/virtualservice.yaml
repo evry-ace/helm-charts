@@ -1,0 +1,30 @@
+{{- if .Values.istio.enabled -}}
+{{- $fullName := include "nodejs.fullname" . -}}
+{{- $ingressPath := .Values.ingress.path -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "golang.name "}}-rule
+  labels:
+    app: {{ template "nodejs.name" . }}
+    chart: {{ template "nodejs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  hosts:
+    {{- range .Values.ingress.hosts }}
+      - {{ . }}
+    {{- end }}
+  gateways:
+  - {{ .Values.gateway }}
+  http:
+  - match:
+      uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
+        host: "{{ template "nodejs.name" . }}.{{ .Release.Namespace }}"
+      weight: 80
+{{- end }}
