@@ -2,7 +2,15 @@ apiVersion: v1
 entries:
   golang-istio:
   - apiVersion: v1
-    created: 2019-01-27T00:14:40.309334123+01:00
+    created: 2019-01-27T00:18:04.491308023+01:00
+    description: golan Helm Chart
+    digest: 85af14f30c40161a852eddac4d36b0730d05484c24393eed421cb44a273aaad0
+    name: golang-istio
+    urls:
+    - release/golang-istio-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v1
+    created: 2019-01-27T00:18:04.491154144+01:00
     description: golan Helm Chart
     digest: 584b4eb9ba42b9be6b3214b62063607e1eb9382d251b4190b9612de5227b23f2
     name: golang-istio
@@ -10,7 +18,7 @@ entries:
     - release/golang-istio-1.0.1.tgz
     version: 1.0.1
   - apiVersion: v1
-    created: 2019-01-27T00:14:40.308403307+01:00
+    created: 2019-01-27T00:18:04.4909904+01:00
     description: golan Helm Chart
     digest: f513369a79533931b1e0b74cd5d3039af109fa7bc74912b5cd2fe6db134b7100
     name: golang-istio
@@ -19,7 +27,7 @@ entries:
     version: 1.0.0
   nodejs:
   - apiVersion: v1
-    created: 2019-01-27T00:14:40.312816557+01:00
+    created: 2019-01-27T00:18:04.491850971+01:00
     description: Node.js Helm Chart
     digest: b5ea6f5e7bc8ec14c61e677cbb87b512252b00bb9e4109ca7aec8d27fd8c95f7
     name: nodejs
@@ -27,11 +35,11 @@ entries:
     - release/nodejs-2.0.0.tgz
     version: 2.0.0
   - apiVersion: v1
-    created: 2019-01-27T00:14:40.311629862+01:00
+    created: 2019-01-27T00:18:04.491669303+01:00
     description: A Helm chart for Kubernetes
     digest: 068cec84b28ccb95cdec079672b653997dd1d278d35d29ebb344b5a65b86c631
     name: nodejs
     urls:
     - release/nodejs-1.0.0.tgz
     version: 1.0.0
-generated: 2019-01-27T00:14:40.24813716+01:00
+generated: 2019-01-27T00:18:04.490735363+01:00
