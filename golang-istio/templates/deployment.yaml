@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "nodejs.fullname" . }}
+  name: {{ template "golang-istio.fullname" . }}
   labels:
-    app: {{ template "nodejs.name" . }}
-    chart: {{ template "nodejs.chart" . }}
+    app: {{ template "golang-istio.name" . }}
+    chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "nodejs.name" . }}
+      app: {{ template "golang-istio.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "nodejs.name" . }}
+        app: {{ template "golang-istio.name" . }}
         release: {{ .Release.Name }}
     spec:
 {{- if .Values.image.pullSecrets }}
