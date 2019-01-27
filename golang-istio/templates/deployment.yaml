@@ -32,19 +32,19 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort | default "http" }}
+              containerPort: {{ .Values.service.targetPort | default 80 }}
               protocol: TCP
 {{- if .Values.liveness }}
           livenessProbe:
             httpGet:
               path: {{ .Values.liveness.path | default "/" }}
-              port: {{ .Values.liveness.port | default "http" }}
+              port: {{ .Values.liveness.port | default 80 }}
 {{- end }}
 {{- if .Values.readiness }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readiness.path | default "/" }}
-              port: {{ .Values.readiness.port | default "http" }}
+              port: {{ .Values.readiness.port | default 80 }}
 {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
