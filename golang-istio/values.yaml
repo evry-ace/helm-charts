@@ -51,3 +51,5 @@ istio:
   enabled: false
   gateways:
     - custom-gateway
+  hosts:
+    - chart-example.local
