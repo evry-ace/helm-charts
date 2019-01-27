@@ -49,4 +49,5 @@ affinity: {}
 
 istio:
   enabled: false
-  gateway: custom-gateway
+  gateways:
+    - custom-gateway
