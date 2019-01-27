@@ -31,6 +31,6 @@ spec:
     - destination:
         port:
           number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
-        host: "{{ template "golang-istio.name" . }}.{{ .Release.Namespace }}"
+        host: "{{ template "golang-istio.fullname" . }}.{{ .Release.Namespace }}"
       weight: 80
 {{- end }}
