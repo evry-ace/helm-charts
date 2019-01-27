@@ -13,20 +13,20 @@ metadata:
 spec:
   hosts:
   {{- range .Values.istio.hosts }}
-    - {{ . }}
+    - "{{ . }}"
   {{- end }}
   gateways:
 {{- if .Values.istio.gateways }}
   {{- range .Values.istio.gateways }}
-    - {{ . }}
+    - "{{ . }}"
   {{- end }}
 {{- else }}
-    - {{ template "golang-istio.name" . }}-gateway
+    - "{{ template "golang-istio.name" . }}-gateway"
 {{- end }}
   http:
   - match:
-      uri:
-        prefix: {{ .Values.istio.path | default "/" }}
+      - uri:
+          prefix: {{ .Values.istio.path | default "/" }}
     route:
     - destination:
         port:
