@@ -49,7 +49,6 @@ affinity: {}
 
 istio:
   enabled: false
-  gateways:
-    - custom-gateway
+  gateways: []
   hosts:
     - chart-example.local

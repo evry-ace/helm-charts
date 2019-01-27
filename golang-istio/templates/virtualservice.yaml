@@ -16,9 +16,13 @@ spec:
     - {{ . }}
   {{- end }}
   gateways:
+{{- if .Values.istio.gateways }}
   {{- range .Values.istio.gateways }}
     - {{ . }}
   {{- end }}
+{{- else }}
+    - {{ template "golang-istio.name" . }}-gateway
+{{- end }}
   http:
   - match:
       uri:
