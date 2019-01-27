@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    version: {{ .Values.version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -31,16 +32,20 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.targetPort | default "http" }}
               protocol: TCP
+{{- if .Values.liveness }}
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.liveness.path | default "/" }}
+              port: {{ .Values.liveness.port | default "http" }}
+{{- end }}
+{{- if .Values.readiness }}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.readiness.path | default "/" }}
+              port: {{ .Values.readiness.port | default "http" }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
