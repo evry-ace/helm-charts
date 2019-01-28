@@ -4,7 +4,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ template "golang-istio.name" . }}-rule
+  name: {{ template "golang-istio.fullname" . }}-rule
   labels:
     app: {{ template "golang-istio.name" . }}
     chart: {{ template "golang-istio.chart" . }}

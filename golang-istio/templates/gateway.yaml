@@ -3,7 +3,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{ template "golang-istio.name" . }}-gateway
+  name: {{ template "golang-istio.fullname" . }}-gateway
   labels:
     app: {{ template "golang-istio.name" . }}
     chart: {{ template "golang-istio.chart" . }}
