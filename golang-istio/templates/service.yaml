@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     version: {{ .Values.version }}
+{{- if .Values.metrics.enabled }}
+    prometheus: {{ .Values.metrics.prometheusInstance }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
