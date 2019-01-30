@@ -29,10 +29,14 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          # Contaner Ports
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
+
+          # Health Checks
           livenessProbe:
             httpGet:
               path: /
@@ -41,6 +45,17 @@ spec:
             httpGet:
               path: /
               port: http
+
+          # Environment variables
+          env:
+          {{- if .Values.secrets }}
+  {{ toYaml .Values.secrets | indent 12 }}
+          {{- end }}
+          {{- if .Values.environment }}
+  {{ toYaml .Values.environment | indent 12 }}
+          {{- end }}
+
+          # Container resources
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
