@@ -51,10 +51,10 @@ spec:
           - name: APP_ENV
             value: {{ .Values.appEnv }}
           {{- if .Values.secrets }}
-{{ toYaml .Values.secrets | indent 12 }}
+{{ toYaml .Values.secrets | indent 10 }}
           {{- end }}
           {{- if .Values.environment }}
-{{ toYaml .Values.environment | indent 12 }}
+{{ toYaml .Values.environment | indent 10 }}
           {{- end }}
 
           # Container resources
