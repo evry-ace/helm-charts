@@ -48,6 +48,8 @@ spec:
 
           # Environment variables
           env:
+          - name: APP_ENV
+            value: {{ .Values.appEnv }}
           {{- if .Values.secrets }}
   {{ toYaml .Values.secrets | indent 12 }}
           {{- end }}
