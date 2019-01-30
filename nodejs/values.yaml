@@ -4,8 +4,12 @@
 
 replicaCount: 1
 
+name: ""
+appVersion: v1
+
 image:
-  image: ""
+  repository: ""
+  tag: ""
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
@@ -52,11 +56,10 @@ tolerations: []
 
 affinity: {}
 
-version: v1
-
 # We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
 metrics:
   enabled: true
+  prometheusInstance: default # Select the default prometheus instance.
   endpoints:
   - targetPort: 8081
     path: /metrics

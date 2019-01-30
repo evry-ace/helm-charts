@@ -1,15 +1,16 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "nodejs.fullname" . -}}
+{{- $name := include "nodejs.name" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $name }}
   labels:
     app: {{ template "nodejs.name" . }}
     chart: {{ template "nodejs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -32,7 +33,7 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ $name }}
               servicePort: http
   {{- end }}
 {{- end }}
