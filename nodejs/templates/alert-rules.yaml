@@ -1,0 +1,14 @@
+{{- if .Values.alertRules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "nodejs.name" . }}
+  labels:
+    app: {{ template "nodejs.name" . }}
+    chart: {{ template "nodejs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  groups:
+{{ toYaml .Values.alertRules | indent 4 }}
+{{- end }}

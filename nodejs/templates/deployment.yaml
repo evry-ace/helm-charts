@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "nodejs.fullname" . }}
+  name: {{ template "nodejs.name" . }}
   labels:
     app: {{ template "nodejs.name" . }}
     chart: {{ template "nodejs.chart" . }}

@@ -1,0 +1,18 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "nodejs.name" . }}
+  labels:
+    app: {{ template "nodejs.name" . }}
+    chart: {{ template "nodejs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "nodejs.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+{{ toYaml .Values.metrics.endpoints | indent 4 }}
+{{- end }}
