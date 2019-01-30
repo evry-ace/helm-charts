@@ -64,7 +64,7 @@ metrics:
   enabled: true
   prometheusInstance: default # Select the default prometheus instance.
   endpoints:
-  - targetPort: 8081
+  - targetPort: 8080
     path: /metrics
 
 alertRules: []
