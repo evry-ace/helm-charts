@@ -10,7 +10,6 @@ metadata:
     chart: {{ template "nodejs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

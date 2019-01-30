@@ -8,7 +8,6 @@ metadata:
     chart: {{ template "nodejs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
 spec:
   groups:
 {{ toYaml .Values.alertRules | indent 4 }}
