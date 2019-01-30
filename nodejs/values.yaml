@@ -5,8 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: ""
-  tag: ""
+  image: ""
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
@@ -29,6 +28,12 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+istio:
+  enabled: false
+  gateways: []
+  hosts:
+    - chart-example.local
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -46,3 +51,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+version: v1
+
+# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
+metrics:
+  enabled: true
+  endpoints:
+  - targetPort: 8081
+    path: /metrics
+
+alertRules: []
