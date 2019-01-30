@@ -2,8 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "golang-istio.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang-istio.name" . }}
+    app: {{ template "golang-istio.fullname" . }}
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

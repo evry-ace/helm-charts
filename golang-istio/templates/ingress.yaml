@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "golang-istio.name" . }}
+    app: {{ template "golang-istio.fullname" . }}
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

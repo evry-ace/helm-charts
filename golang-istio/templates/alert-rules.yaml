@@ -1,0 +1,16 @@
+{{- if .Values.alertRules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "golang-istio.fullname" . }}-rules
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "golang-istio.fullname" . }}
+    chart: {{ template "golang-istio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.version }}
+spec:
+  groups:
+{{ toYaml .Values.alertRules | indent 4 }}
+{{- end }}

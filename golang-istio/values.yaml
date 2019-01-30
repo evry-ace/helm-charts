@@ -54,3 +54,12 @@ istio:
     - chart-example.local
 
 version: v1
+
+# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
+metrics:
+  enabled: true
+  endpoints:
+    - targetPort: 8081
+      path: /metrics
+
+alertRules: []
