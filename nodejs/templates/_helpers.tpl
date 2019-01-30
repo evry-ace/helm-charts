@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "nodejs.name" -}}
-{{- default .Values.name .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- default .Release.Name .Values.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
