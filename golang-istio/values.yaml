@@ -53,7 +53,7 @@ istio:
   hosts:
     - chart-example.local
 
-version: v1
+appVersion: v1
 
 # We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
 metrics:

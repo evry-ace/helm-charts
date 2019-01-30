@@ -10,7 +10,7 @@ metadata:
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    version: {{ .Values.version }}
+    version: {{ .Values.appVersion }}
 spec:
   hosts:
   {{- range .Values.istio.hosts }}
