@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "golang-istio.fullname" . }}
+  name: {{ template "golang-istio.name" . }}
   labels:
-    app: {{ template "golang-istio.fullname" . }}
+    app: {{ template "golang-istio.name" . }}
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

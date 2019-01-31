@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "golang-istio.fullname" . }}-servicemonitor
+  name: {{ template "golang-istio.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "golang-istio.name" . }}
@@ -13,7 +13,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "golang-istio.fullname" . }}
+      app: {{ template "golang-istio.name" . }}
       release: {{ .Release.Name }}
   endpoints:
 {{ toYaml .Values.metrics.endpoints | indent 4 }}

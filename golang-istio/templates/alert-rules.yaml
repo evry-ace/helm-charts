@@ -2,10 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ template "golang-istio.fullname" . }}-rules
+  name: {{ template "golang-istio.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang-istio.fullname" . }}
+    app: {{ template "golang-istio.name" . }}
     chart: {{ template "golang-istio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
