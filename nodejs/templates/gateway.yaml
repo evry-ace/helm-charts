@@ -3,7 +3,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{ template "nodejs.name" . }}
+  name: {{ template "nodejs.name" . }}-gateway
   labels:
     app: {{ template "nodejs.name" . }}
     chart: {{ template "nodejs.chart" . }}
