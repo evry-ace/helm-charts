@@ -19,9 +19,15 @@ image:
 environment: {}
 secrets: {}
 
+liveliness:
+  port: 8080
+readyness:
+  port: 8080
+
 service:
   type: ClusterIP
   port: 80
+  targetPort: 8080
 
 ingress:
   enabled: false
@@ -65,7 +71,7 @@ metrics:
   enabled: true
   prometheusInstance: default # Select the default prometheus instance.
   endpoints:
-    - targetPort: 8081
+    - targetPort: 8080
       path: /metrics
 
 alertRules: []

@@ -34,19 +34,21 @@ spec:
           # Contaner Ports
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.targetPort | default 80 }}
               protocol: TCP
 
-          # Health Checks
+{{- if .Values.liveness }}
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.liveness.path | default "/" }}
+              port: {{ .Values.liveness.port | default 80 }}
+{{- end }}
+{{- if .Values.readiness }}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
-
+              path: {{ .Values.readiness.path | default "/" }}
+              port: {{ .Values.readiness.port | default 80 }}
+{{- end }}
           # Environment variables
           env:
           - name: APP_ENV
