@@ -1,6 +1,6 @@
 {{- if .Values.egress }}
-{{- $name := include "golang.name" . }}
-{{- $chart := include "golang.chart" . }}
+{{- $name := include "noidejs.name" . }}
+{{- $chart := include "noidejs.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
@@ -9,7 +9,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{ $name }}-{{ $entry.name }}-httpsq"
+  name: "{{ $name }}-{{ $entry.name }}-https"
   labels:
     app: {{ $name }}
     chart: {{ $chart }}
@@ -63,7 +63,7 @@ spec:
         - destination:
             host: {{ $t.host }}
             port:
-              number: {{ $t.port | default "443" }}
+              number: {{ $t.port | default "80" }}
           weight: 100
 {{- end }}
 {{- end }}

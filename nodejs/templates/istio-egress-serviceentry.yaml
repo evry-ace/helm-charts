@@ -1,6 +1,6 @@
 {{- if .Values.egress }}
-{{- $name := include "golang.name" . }}
-{{- $chart := include "golang.chart" . }}
+{{- $name := include "noidejs.name" . }}
+{{- $chart := include "noidejs.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
