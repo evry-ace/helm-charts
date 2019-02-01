@@ -1,4 +1,4 @@
 apiVersion: v1
 description: golan Helm Chart
-name: golang-istio
-version: 4.0.0
+name: golang
+version: 5.0.0

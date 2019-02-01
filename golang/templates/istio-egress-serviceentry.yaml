@@ -1,10 +1,37 @@
 {{- if .Values.egress }}
-{{- $name := include "golang-istio.name" . }}
-{{- $chart := include "golang-istio.chart" . }}
+{{- $name := include "golang.name" . }}
+{{- $chart := include "golang.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
 {{ range $entry := .Values.egress.https }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}"
+  labels:
+    app: {{ $name }}
+    chart: {{ $chart }}
+    release: {{ $release.Name }}
+    heritage: {{ $release.Service }}
+    version: {{ $values.appVersion }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port }}
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}}
+{{- end }}
+
+{{ range $entry := .Values.egress.http }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
@@ -30,4 +57,5 @@ spec:
   location: MESH_EXTERNAL
 {{- end }}}
 {{- end }}
+
 {{- end }}

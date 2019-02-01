@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "golang-istio.name" . }}
+  name: {{ template "golang.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang-istio.name" . }}
-    chart: {{ template "golang-istio.chart" . }}
+    app: {{ template "golang.name" . }}
+    chart: {{ template "golang.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
@@ -20,5 +20,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "golang-istio.name" . }}
+    app: {{ template "golang.name" . }}
     release: {{ .Release.Name }}

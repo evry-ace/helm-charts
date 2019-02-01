@@ -2,13 +2,13 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "golang-istio.name" -}}
+{{- define "golang.name" -}}
 {{- default .Release.Name .Values.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "golang-istio.chart" -}}
+{{- define "golang.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
