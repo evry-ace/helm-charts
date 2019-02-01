@@ -75,3 +75,11 @@ metrics:
       path: /metrics
 
 alertRules: []
+
+egress:
+  https: &sanity_api
+  - name: sanity-api
+    targets: 
+    - host: api.sanity.io
+      port: 80
+  http: *sanity_api
