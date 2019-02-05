@@ -30,6 +30,6 @@ spec:
     - destination:
         port:
           number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
-        host: "{{ template "nodejs.name" . }}.{{ .Release.Namespace }}".svc.cluster.local
+        host: "{{ template "nodejs.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
       weight: 80
 {{- end }}
