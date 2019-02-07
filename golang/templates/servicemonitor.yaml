@@ -10,6 +10,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
+{{- if .Values.metrics.enabled }}
+    prometheus: {{ .Values.metrics.prometheusInstance }}
+{{- end }}
 spec:
   selector:
     matchLabels:
