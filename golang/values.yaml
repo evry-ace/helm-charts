@@ -19,9 +19,9 @@ image:
 environment: {}
 secrets: {}
 
-liveliness:
+liveness:
   port: 8080
-readyness:
+readiness:
   port: 8080
 
 service:
