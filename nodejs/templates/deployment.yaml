@@ -37,13 +37,13 @@ spec:
               containerPort: {{ .Values.service.targetPort | default 8080 }}
               protocol: TCP
 
-{{- if .Values.liveness }}
+{{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:
             httpGet:
               path: {{ .Values.liveness.path | default "/" }}
               port: {{ .Values.liveness.port | default 8080 }}
 {{- end }}
-{{- if .Values.readiness }}
+{{- if and (.Values.readiness) (.Values.readiness.enabled) }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readiness.path | default "/" }}

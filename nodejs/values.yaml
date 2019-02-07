@@ -21,8 +21,10 @@ secrets: {}
 
 liveness:
   port: 8080
+  enabled: true
 readiness:
   port: 8080
+  enabled: true
 
 service:
   type: ClusterIP
