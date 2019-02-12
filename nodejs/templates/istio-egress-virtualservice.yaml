@@ -1,6 +1,6 @@
 {{- if .Values.egress }}
-{{- $name := include "noidejs.name" . }}
-{{- $chart := include "noidejs.chart" . }}
+{{- $name := include "nodejs.name" . }}
+{{- $chart := include "nodejs.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
