@@ -1,0 +1,77 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "dotnet.name" . }}
+  labels:
+    app: {{ template "dotnet.name" . }}
+    chart: {{ template "dotnet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "dotnet.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dotnet.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          # Contaner Ports
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort | default 8080 }}
+              protocol: TCP
+
+{{- if and (.Values.liveness) (.Values.liveness.enabled) }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.liveness.path | default "/" }}
+              port: {{ .Values.liveness.port | default 8080 }}
+{{- end }}
+{{- if and (.Values.readiness) (.Values.readiness.enabled) }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readiness.path | default "/" }}
+              port: {{ .Values.readiness.port | default 8080 }}
+{{- end }}
+          # Environment variables
+          env:
+          - name: APP_ENV
+            value: {{ .Values.appEnv }}
+          {{- if .Values.secrets }}
+{{ toYaml .Values.secrets | indent 10 }}
+          {{- end }}
+          {{- if .Values.environment }}
+{{ toYaml .Values.environment | indent 10 }}
+          {{- end }}
+
+          # Container resources
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

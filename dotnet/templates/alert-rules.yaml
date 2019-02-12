@@ -1,0 +1,15 @@
+{{- if .Values.alertRules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "dotnet.name" . }}
+  labels:
+    app: {{ template "dotnet.name" . }}
+    chart: {{ template "dotnet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+spec:
+  groups:
+{{ toYaml .Values.alertRules | indent 4 }}
+{{- end }}

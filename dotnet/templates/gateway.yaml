@@ -1,0 +1,26 @@
+{{- if .Values.istio.enabled -}}
+{{- if not .Values.istio.gateways }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ template "dotnet.name" . }}-gateway
+  labels:
+    app: {{ template "dotnet.name" . }}
+    chart: {{ template "dotnet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    {{- range .Values.istio.hosts }}
+      - {{ . }}
+    {{- end }}
+{{- end }}
+{{- end }}
