@@ -19,5 +19,21 @@ spec:
       app: {{ template "golang.name" . }}
       release: {{ .Release.Name }}
   endpoints:
+{{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}
+{{- else }}
+  - path: {{ .Values.metrics.endpointPath }}
+    interval: {{ .Values.metrics.endpointInterval | default "15s" }}
+    targetPort: {{ .Values.metrics.endpointTargetPort | default 8080 }}
+    honorLabels: {{ .Values.metrics.endpointHonorLabels | default true }}
+{{- if .Values.metrics.prometheusIstioMtlsEnabled }}
+    scheme: https
+    tlsConfig:
+      caFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/root-cert.pem
+      certFile: /etc/prometheus/secrets/{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
+      keyFile: /etc/prometheus/secrets/{{ .Values.metrics.prometheusIstioSecret }}/key.pem
+      insecureSkipVerify: true
+{{- end}}
+
+{{- end }}
 {{- end }}
