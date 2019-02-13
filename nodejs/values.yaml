@@ -73,8 +73,12 @@ affinity: {}
 metrics:
   enabled: true
   prometheusInstance: default # Select the default prometheus instance.
-  endpoints:
-  - targetPort: 8080
-    path: /metrics
+  
+  prometheusIstioSecret: default
+  prometheusIstioMtlsEnabled: true
+
+  # endpoints:
+  # - targetPort: 8080
+  #   path: /metrics
 
 alertRules: []
