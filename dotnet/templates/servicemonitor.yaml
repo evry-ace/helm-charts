@@ -29,8 +29,8 @@ spec:
     scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/root-cert.pem
-      certFile: /etc/prometheus/secrets/{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
-      keyFile: /etc/prometheus/secrets/{{ .Values.metrics.prometheusIstioSecret }}/key.pem
+      certFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
+      keyFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/key.pem
       insecureSkipVerify: true
 {{- end}}
 
