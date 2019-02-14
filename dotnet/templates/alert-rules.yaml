@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
+    alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:
 {{ toYaml .Values.alertRules | indent 4 }}
