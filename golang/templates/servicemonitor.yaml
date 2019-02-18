@@ -22,7 +22,7 @@ spec:
 {{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}
 {{- else }}
-  - path: {{ .Values.metrics.endpointPath }}
+  - path: {{ .Values.metrics.endpointPath | default "/metrics" }}
     interval: {{ .Values.metrics.endpointInterval | default "15s" }}
     targetPort: {{ .Values.metrics.endpointTargetPort | default 8080 }}
     honorLabels: {{ .Values.metrics.endpointHonorLabels | default true }}
