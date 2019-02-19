@@ -1,6 +1,6 @@
 {{- if .Values.egress }}
-{{- $name := include "noidejs.name" . }}
-{{- $chart := include "noidejs.chart" . }}
+{{- $name := include "dotnet.name" . }}
+{{- $chart := include "dotnet.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
@@ -28,7 +28,7 @@ spec:
     protocol: HTTPS
   resolution: DNS
   location: MESH_EXTERNAL
-{{- end }}}
+{{- end }}
 {{- end }}
 
 
@@ -56,7 +56,7 @@ spec:
     protocol: HTTP
   resolution: DNS
   location: MESH_EXTERNAL
-{{- end }}}
+{{- end }}
 {{- end }}
 
 {{- end }}
