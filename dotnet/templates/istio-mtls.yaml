@@ -1,0 +1,12 @@
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Release.Name}}-mtls
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ template "dotnet.name" . }}
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}}
