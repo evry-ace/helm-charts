@@ -9,4 +9,4 @@ spec:
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL
-{{- end }}}
+{{- end }}
