@@ -1,4 +1,4 @@
-{{- if (.Values.istio.enabled) and (.Values.istio.ingress.enabled) -}}
+{{- if and .Values.istio.enabled (.Values.istio.ingress.enabled) }}
 {{- if not .Values.istio.ingress.gateways }}
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
