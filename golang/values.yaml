@@ -46,9 +46,14 @@ ingress:
 
 istio:
   enabled: false
-  gateways: []
-  hosts:
-    - chart-example.local
+  ingress:
+    enabled: false
+    gateways: []
+    hosts:
+      - chart-example.local
+    tls:
+      enabled: true
+      # secretName: chart-example-tls
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
