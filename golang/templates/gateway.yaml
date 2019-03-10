@@ -1,5 +1,5 @@
-{{- if .Values.istio.enabled -}}
-{{- if not .Values.istio.gateways }}
+{{- if (.Values.istio.enabled) and (.Values.istio.ingress.enabled) -}}
+{{- if not .Values.istio.ingress.gateways }}
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -19,8 +19,27 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    {{- range .Values.istio.hosts }}
+    {{- range .Values.istio.ingress.hosts }}
       - {{ . }}
     {{- end }}
+
+{{- if .Values.istio.ingress.tls.enabled }}
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    {{- range .Values.istio.ingress.hosts }}
+      - {{ . }}
+    {{- end }}
+    tls:
+    mode: SIMPLE
+{{- if .Values.istio.ingress.tls.secretName }}
+    credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
+{{- else }}
+    credentialName: "{{ template "golang.name" . }}-tls"
+{{- end }}
+{{- end }}
+
 {{- end }}
 {{- end }}
