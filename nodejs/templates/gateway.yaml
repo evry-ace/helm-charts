@@ -33,11 +33,11 @@ spec:
       - {{ . }}
     {{- end }}
     tls:
-    mode: SIMPLE
+      mode: SIMPLE
 {{- if .Values.istio.ingress.tls.secretName }}
-    credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
+      credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
 {{- else }}
-    credentialName: "{{ template "nodejs.name" . }}-tls"
+      credentialName: "{{ template "nodejs.name" . }}-tls"
 {{- end }}
 {{- end }}
 
