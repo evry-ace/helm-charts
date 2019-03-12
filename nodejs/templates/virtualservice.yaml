@@ -11,7 +11,7 @@ metadata:
     version: {{ .Values.appVersion }}
 spec:
   hosts:
-  {{- range .Values.istio.hosts }}
+  {{- range .Values.istio.ingress.hosts }}
     - "{{ . }}"
   {{- end }}
   gateways:
