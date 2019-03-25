@@ -4,6 +4,10 @@ kind: DestinationRule
 metadata:
   name: {{ .Release.Name}}-mtls
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "dotnet.name" . }}
+    release: {{ .Release.Name }}
+    version: {{ .Values.appVersion }}
 spec:
   host: {{ template "dotnet.name" . }}
   trafficPolicy:

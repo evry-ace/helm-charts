@@ -4,6 +4,10 @@ kind: DestinationRule
 metadata:
   name: {{ .Release.Name}}-mtls
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "golang.name" . }}
+    release: {{ .Release.Name }}
+    version: {{ .Values.appVersion }}
 spec:
   host: {{ template "golang.name" . }}
   trafficPolicy:
