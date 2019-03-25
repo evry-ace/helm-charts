@@ -14,6 +14,7 @@ spec:
     matchLabels:
       app: {{ template "nodejs.name" . }}
       release: {{ .Release.Name }}
+      version: {{ .Values.appVersion }}
   template:
     metadata:
       labels:
