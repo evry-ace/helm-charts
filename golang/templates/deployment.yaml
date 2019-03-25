@@ -20,6 +20,7 @@ spec:
       labels:
         app: {{ template "golang.name" . }}
         release: {{ .Release.Name }}
+        version: {{ .Values.appVersion }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
