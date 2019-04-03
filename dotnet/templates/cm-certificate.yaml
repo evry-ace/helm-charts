@@ -1,4 +1,13 @@
-{{- if .Values.cert.enabled }}
+{{- $hosts := .Values.cert.hosts -}}
+
+{{- if and .Values.istio.enabled (.Values.istio.ingress.enabled) }}
+{{ $hosts = .Values.istio.ingress.hosts }}
+{{- else if .Values.ingress.enabled }}
+{{ $hosts = .Values.ingress.hosts }}
+{{- end }}
+
+{{- if and .Values.cert.enabled ($hosts) }}
+
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
@@ -18,10 +27,10 @@ spec:
     - dns01:
         provider: {{ .Values.cert.acmeDnsProvider }}
       domains:
-        - {{ .Values.hostname }}
-  commonName: {{ .Values.hostname }}
+{{ $hosts | toYaml | indent 8 }}
+  commonName: {{ index $hosts 0 }}
   dnsNames:
-  - {{ .Values.hostname }}
+{{ $hosts | toYaml | indent 4 }}
   issuerRef:
     kind: {{ .Values.cert.issuerKind | default "ClusterIssuer" }}
     name: {{ .Values.cert.issuer | default "letsencrypt-prod" }}

@@ -90,6 +90,7 @@ alertRules: []
 cert:
   enabled: true
   annotations: {}
+  hosts: []
   acmeDnsProvider: default
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
