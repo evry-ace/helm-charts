@@ -86,3 +86,10 @@ metrics:
   #     path: /metrics
 
 alertRules: []
+
+cert:
+  enabled: true
+  annotations: {}
+  acmeDnsProvider: default
+  issuer: letsencrypt-prod
+  issuerKind: ClusterIssuer
