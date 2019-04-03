@@ -26,4 +26,4 @@ spec:
     kind: {{ .Values.cert.issuerKind | default "ClusterIssuer" }}
     name: {{ .Values.cert.issuer | default "letsencrypt-prod" }}
   secretName: {{ template "golang.name" . }}-tls
-{{- end }}}}
+{{- end }}
