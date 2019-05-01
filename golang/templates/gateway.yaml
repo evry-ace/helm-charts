@@ -22,7 +22,10 @@ spec:
     {{- range .Values.istio.ingress.hosts }}
       - {{ . }}
     {{- end }}
-
+{{- if .Values.istio.ingress.tls.enabled }}
+    tls:
+      httpsRedirect: true
+{{- end }}
 {{- if .Values.istio.ingress.tls.enabled }}
   - port:
       number: 443
