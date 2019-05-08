@@ -22,7 +22,7 @@ spec:
     {{- range .Values.istio.ingress.hosts }}
       - {{ . }}
     {{- end }}
-{{- if .Values.istio.ingress.tls.enabled }}
+{{- if .Values.istio.ingress.tls.httpsRedirect }}
     tls:
       httpsRedirect: true
 {{- end }}

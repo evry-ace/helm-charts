@@ -53,6 +53,7 @@ istio:
       - chart-example.local
     tls:
       enabled: true
+      httpsRedirect: false
       # secretName: chart-example-tls
 
 resources: {}
