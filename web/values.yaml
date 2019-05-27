@@ -1,4 +1,4 @@
-# Default values for web.
+# Default values for web-istio.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,10 +7,14 @@ replicaCount: 1
 name: ""
 appVersion: v1
 
+
 image:
   repository: ""
   tag: ""
   pullPolicy: IfNotPresent
+  # pullSecrets:
+  #   - secret1
+  #   - secret2
 
 environment: {}
 secrets: {}
@@ -39,6 +43,18 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+istio:
+  enabled: false
+  ingress:
+    enabled: false
+    gateways: []
+    hosts:
+      - chart-example.local
+    tls:
+      enabled: true
+      httpsRedirect: false
+      # secretName: chart-example-tls
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -71,3 +87,11 @@ metrics:
   #     path: /metrics
 
 alertRules: []
+
+cert:
+  enabled: true
+  annotations: {}
+  hosts: []
+  acmeDnsProvider: default
+  issuer: letsencrypt-prod
+  issuerKind: ClusterIssuer
