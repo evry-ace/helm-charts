@@ -1,0 +1,73 @@
+# Default values for web.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+name: ""
+appVersion: v1
+
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+environment: {}
+secrets: {}
+
+liveness:
+  port: 8080
+  enabled: true
+readiness:
+  port: 8080
+  enabled: true
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
+metrics:
+  enabled: true
+  prometheusInstance: default # Select the default prometheus instance.
+
+  prometheusIstioSecret: default
+  prometheusIstioMtlsEnabled: true
+
+  # endpoints:
+  #   - targetPort: 8080
+  #     path: /metrics
+
+alertRules: []

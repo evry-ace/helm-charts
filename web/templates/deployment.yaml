@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "web.name" . }}
+  labels:
+    app: {{ template "web.name" . }}
+    chart: {{ template "web.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "web.name" . }}
+      release: {{ .Release.Name }}
+      version: {{ .Values.appVersion }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "web.name" . }}
+        release: {{ .Release.Name }}
+        version: {{ .Values.appVersion }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort | default 8080 }}
+              protocol: TCP
+{{- if and (.Values.liveness) (.Values.liveness.enabled) }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.liveness.path | default "/" }}
+              port: {{ .Values.liveness.port | default 8080 }}
+{{- end }}
+{{- if and (.Values.readiness) (.Values.readiness.enabled) }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readiness.path | default "/" }}
+              port: {{ .Values.readiness.port | default 8080 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
