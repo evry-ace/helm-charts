@@ -1,0 +1,35 @@
+{{- if and .Values.istio.enabled (.Values.istio.ingress.enabled) }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "web.name" . }}
+  labels:
+    app: {{ template "web.name" . }}
+    chart: {{ template "web.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+spec:
+  hosts:
+  {{- range .Values.istio.ingress.hosts }}
+    - "{{ . }}"
+  {{- end }}
+  gateways:
+{{- if .Values.istio.ingress.gateways }}
+  {{- range .Values.istio.ingress.gateways }}
+    - "{{ . }}"
+  {{- end }}
+{{- else }}
+    - "{{ template "web.name" . }}-gateway"
+{{- end }}
+  http:
+  - match:
+      - uri:
+          prefix: {{ .Values.istio.ingress.path | default "/" }}
+    route:
+    - destination:
+        port:
+          number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
+        host: "{{ template "web.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+      weight: 80
+{{- end }}
