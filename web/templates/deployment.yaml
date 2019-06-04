@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort | default 8080 }}
+              containerPort: {{ .Values.deployment.service.targetPort | default 8080 }}
               protocol: TCP
 {{- if and (.Values.deployment.liveness) (.Values.deployment.liveness.enabled) }}
           livenessProbe:
