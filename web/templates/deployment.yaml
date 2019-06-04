@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "web.name" . }}
@@ -22,25 +22,31 @@ spec:
         release: {{ .Release.Name }}
         version: {{ .Values.appVersion }}
     spec:
+{{- if .Values.deployment.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.deployment.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort | default 8080 }}
               protocol: TCP
-{{- if and (.Values.liveness) (.Values.liveness.enabled) }}
+{{- if and (.Values.deployment.liveness) (.Values.deployment.liveness.enabled) }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.liveness.path | default "/" }}
-              port: {{ .Values.liveness.port | default 8080 }}
+              path: {{ .Values.deployment.liveness.path | default "/" }}
+              port: {{ .Values.deployment.liveness.port | default 8080 }}
 {{- end }}
-{{- if and (.Values.readiness) (.Values.readiness.enabled) }}
+{{- if and (.Values.deployment.readiness) (.Values.deployment.readiness.enabled) }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.readiness.path | default "/" }}
-              port: {{ .Values.readiness.port | default 8080 }}
+              path: {{ .Values.deployment.readiness.path | default "/" }}
+              port: {{ .Values.deployment.readiness.port | default 8080 }}
 {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
