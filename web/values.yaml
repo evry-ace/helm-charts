@@ -2,34 +2,33 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 name: ""
+app: ""
 appVersion: v1
 
+deployment:
+  image:
+    repository: ""
+    tag: ""
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - secret1
+    #   - secret2
 
-image:
-  repository: ""
-  tag: ""
-  pullPolicy: IfNotPresent
-  # pullSecrets:
-  #   - secret1
-  #   - secret2
+  replicaCount: 1
 
-environment: {}
-secrets: {}
+  liveness:
+    port: 8080
+    enabled: true
 
-liveness:
-  port: 8080
-  enabled: true
-readiness:
-  port: 8080
-  enabled: true
+  readiness:
+    port: 8080
+    enabled: true
 
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8080
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
 
 ingress:
   enabled: false
@@ -43,6 +42,9 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+environment: {}
+secrets: {}
 
 istio:
   enabled: false

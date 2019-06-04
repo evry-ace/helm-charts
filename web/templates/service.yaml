@@ -10,10 +10,10 @@ metadata:
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.deployment.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort | default "http" }}
+    - port: {{ .Values.deployment.service.port }}
+      targetPort: {{ .Values.deployment.service.targetPort | default "http" }}
       protocol: TCP
       name: http
   selector:
