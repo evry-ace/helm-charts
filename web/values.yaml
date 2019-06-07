@@ -8,8 +8,7 @@ appVersion: v1
 
 deployment:
   image:
-    repository: ""
-    tag: ""
+    name: ""
     pullPolicy: IfNotPresent
     # pullSecrets:
     #   - secret1
