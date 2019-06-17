@@ -24,7 +24,7 @@ metadata:
 spec:
   secretName: {{ .Values.cert.secretName }}
   duration: {{ .Values.cert.duration }}
-  renewBefore: {{ .Values.cert.renewBefore}}
+  renewBefore: {{ .Values.cert.renewBefore }}
 {{ $hosts | toYaml | indent 8 }}
   commonName: {{ index $hosts 0 }}
   dnsNames:
