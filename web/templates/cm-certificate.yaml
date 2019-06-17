@@ -23,8 +23,8 @@ metadata:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
   secretName: {{ .Values.cert.secretName }}
-  duration: 2160h # 90d
-  renewBefore: 360h # 15d
+  duration: {{ .Values.cert.duration }}
+  renewBefore: {{ .Values.cert.renewBefore}}
 {{ $hosts | toYaml | indent 8 }}
   commonName: {{ index $hosts 0 }}
   dnsNames:
