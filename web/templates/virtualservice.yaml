@@ -29,7 +29,7 @@ spec:
     route:
     - destination:
         port:
-          number: {{ .Values.deployment.service.port }} # can be omitted if its the only port for reviews
+          number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
         host: "{{ template "web.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
       weight: 80
 {{- end }}

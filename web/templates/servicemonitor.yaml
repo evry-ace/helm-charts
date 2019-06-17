@@ -1,4 +1,4 @@
-{{- if .Values.deployment.metrics.enabled }}
+{{- if .Values.metrics.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -10,8 +10,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
-{{- if .Values.deployment.metrics.enabled }}
-    prometheus: {{ .Values.deployment.metrics.prometheusInstance }}
+{{- if .Values.metrics.enabled }}
+    prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}
 spec:
   selector:
@@ -19,19 +19,19 @@ spec:
       app: {{ template "web.name" . }}
       release: {{ .Release.Name }}
   endpoints:
-{{- if .Values.deployment.metrics.endpoints }}
-{{ toYaml .Values.deployment.metrics.endpoints | indent 4 }}
+{{- if .Values.metrics.endpoints }}
+{{ toYaml .Values.metrics.endpoints | indent 4 }}
 {{- else }}
-  - path: {{ .Values.deployment.metrics.endpointPath | default "/metrics" }}
-    interval: {{ .Values.deployment.metrics.endpointInterval | default "15s" }}
-    targetPort: {{ .Values.deployment.metrics.endpointTargetPort | default 8080 }}
-    honorLabels: {{ .Values.deployment.metrics.endpointHonorLabels | default true }}
-{{- if .Values.deployment.metrics.prometheusIstioMtlsEnabled }}
+  - path: {{ .Values.metrics.endpointPath | default "/metrics" }}
+    interval: {{ .Values.metrics.endpointInterval | default "15s" }}
+    targetPort: {{ .Values.metrics.endpointTargetPort | default 8080 }}
+    honorLabels: {{ .Values.metrics.endpointHonorLabels | default true }}
+{{- if .Values.metrics.prometheusIstioMtlsEnabled }}
     scheme: https
     tlsConfig:
-      caFile: /etc/prometheus/secrets/istio.{{ .Values.deployment.metrics.prometheusIstioSecret }}/root-cert.pem
-      certFile: /etc/prometheus/secrets/istio.{{ .Values.deployment.metrics.prometheusIstioSecret }}/cert-chain.pem
-      keyFile: /etc/prometheus/secrets/istio.{{ .Values.deployment.metrics.prometheusIstioSecret }}/key.pem
+      caFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/root-cert.pem
+      certFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
+      keyFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/key.pem
       insecureSkipVerify: true
 {{- end}}
 
