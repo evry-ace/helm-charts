@@ -82,17 +82,19 @@ metrics:
 
   prometheusIstioSecret: default
   prometheusIstioMtlsEnabled: true
-  
+
   # endpoints:
   # - targetPort: 8080
   #   path: /metrics
-  
+
 alertRules: []
 
 cert:
   enabled: true
   annotations: {}
   hosts: []
-  acmeDnsProvider: default
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
+  secretName: donet-appname-tls
+  duration: 2160h # 90d (Maximum 90d)
+  renewBefore: 360h # 15d

@@ -22,17 +22,14 @@ metadata:
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
-  acme:
-    config:
-    - dns01:
-        provider: {{ .Values.cert.acmeDnsProvider }}
-      domains:
+  secretName: {{ .Values.cert.secretName }}
+  duration: {{ .Values.cert.duration }}
+  renewBefore: {{ .Values.cert.renewBefore}}
 {{ $hosts | toYaml | indent 8 }}
   commonName: {{ index $hosts 0 }}
   dnsNames:
 {{ $hosts | toYaml | indent 4 }}
   issuerRef:
-    kind: {{ .Values.cert.issuerKind | default "ClusterIssuer" }}
     name: {{ .Values.cert.issuer | default "letsencrypt-prod" }}
-  secretName: {{ template "dotnet.name" . }}-tls
+    kind: {{ .Values.cert.issuerKind | default "ClusterIssuer" }}
 {{- end }}
