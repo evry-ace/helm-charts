@@ -1,51 +1,41 @@
-# Default values for web-istio.
+# Default values for web.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+replicaCount: 1
+
 name: ""
-app: ""
+appEnv: production
 appVersion: v1
 
-deployment:
-  image:
-    name: ""
-    pullPolicy: IfNotPresent
-    # pullSecrets:
-    #   - secret1
-    #   - secret2
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+  # pullSecrets:
+  #   - secret1
+  #   - secret2
 
-  replicaCount: 1
+environment: {}
+secrets: {}
 
-  liveness:
-    port: 8080
-    enabled: true
+liveness:
+  port: 80
+  enabled: true
+readiness:
+  port: 80
+  enabled: true
 
-  readiness:
-    port: 8080
-    enabled: true
-
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-
-  # We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
-  metrics:
-    enabled: true
-    prometheusInstance: default # Select the default prometheus instance.
-
-    prometheusIstioSecret: default
-    prometheusIstioMtlsEnabled: true
-
-    # endpoints:
-    #   - targetPort: 8080
-    #     path: /metrics
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
 
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "
+    # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
     - chart-example.local
@@ -53,9 +43,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
-environment: {}
-secrets: {}
 
 istio:
   enabled: false
@@ -68,6 +55,7 @@ istio:
       enabled: true
       httpsRedirect: false
       # secretName: chart-example-tls
+
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -87,6 +75,18 @@ tolerations: []
 
 affinity: {}
 
+# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
+metrics:
+  enabled: true
+  prometheusInstance: default # Select the default prometheus instance.
+
+  prometheusIstioSecret: default
+  prometheusIstioMtlsEnabled: true
+
+  # endpoints:
+  # - targetPort: 8080
+  #   path: /metrics
+
 alertRules: []
 
 cert:
@@ -96,5 +96,5 @@ cert:
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
   secretName: donet-appname-tls
-  duration: 2160h
-  renewBefore: 360h
+  duration: 2160h # 90d (Maximum 90d)
+  renewBefore: 360h # 15d

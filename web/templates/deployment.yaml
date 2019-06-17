@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     version: {{ .Values.appVersion }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "web.name" . }}
@@ -22,31 +22,31 @@ spec:
         release: {{ .Release.Name }}
         version: {{ .Values.appVersion }}
     spec:
-{{- if .Values.deployment.image.pullSecrets }}
+{{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      {{- range $pullSecret := .Values.deployment.image.pullSecrets }}
+      {{- range $pullSecret := .Values.image.pullSecrets }}
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.deployment.image.name }}
-          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.deployment.service.targetPort | default 8080 }}
+              containerPort: {{ .Values.service.targetPort | default 80 }}
               protocol: TCP
-{{- if and (.Values.deployment.liveness) (.Values.deployment.liveness.enabled) }}
+{{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.deployment.liveness.path | default "/" }}
-              port: {{ .Values.deployment.liveness.port | default 8080 }}
+              path: {{ .Values.liveness.path | default "/" }}
+              port: {{ .Values.liveness.port | default 80 }}
 {{- end }}
-{{- if and (.Values.deployment.readiness) (.Values.deployment.readiness.enabled) }}
+{{- if and (.Values.readiness) (.Values.readiness.enabled) }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.deployment.readiness.path | default "/" }}
-              port: {{ .Values.deployment.readiness.port | default 8080 }}
+              path: {{ .Values.readiness.path | default "/" }}
+              port: {{ .Values.readiness.port | default 80 }}
 {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
