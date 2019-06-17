@@ -95,3 +95,4 @@ cert:
   hosts: []
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
+  secretName: donet-appname-tls

@@ -22,7 +22,7 @@ metadata:
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
-  secretName: {{ template "web.name" . }}-tls
+  secretName: {{ .Values.cert.secretName }}
   duration: 2160h # 90d
   renewBefore: 360h # 15d
 {{ $hosts | toYaml | indent 8 }}
