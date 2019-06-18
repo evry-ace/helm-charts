@@ -95,6 +95,6 @@ cert:
   hosts: []
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
-  secretName: donet-appname-tls
-  duration: 1440h
-  renewBefore: 168h
+  # secretName: web-appname-tls
+  # duration: 1440h
+  renewBefore: 360h # 15d

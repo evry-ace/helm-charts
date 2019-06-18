@@ -22,10 +22,15 @@ metadata:
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
+{{- if .Values.cert.secretName }}
   secretName: {{ .Values.cert.secretName }}
+{{- else }}
+  secretName: {{ template "web.name" . }}
+{{- end }}
+{{- if .Values.cert.duration }}
   duration: {{ .Values.cert.duration }}
+{{- end }}
   renewBefore: {{ .Values.cert.renewBefore }}
-{{ $hosts | toYaml | indent 8 }}
   commonName: {{ index $hosts 0 }}
   dnsNames:
 {{ $hosts | toYaml | indent 4 }}
