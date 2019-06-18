@@ -3,7 +3,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
+{{- if Values.istio.gatewayName }}
+  name: {{ .Values.istio.gatewayName }}
+{{- else }}
   name: {{ template "nodejs.name" . }}-gateway
+{{- end }}
   labels:
     app: {{ template "nodejs.name" . }}
     chart: {{ template "nodejs.chart" . }}
@@ -12,7 +16,7 @@ metadata:
     version: {{ .Values.appVersion }}
 spec:
   selector:
-    istio: ingressgateway # use Istio default gateway implementation
+    istio: {{ .Values.istio.ingressGateway | default "ingressgateway" }} # use Istio default gateway implementation
   servers:
   - port:
       number: 80
