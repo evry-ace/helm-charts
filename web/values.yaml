@@ -48,6 +48,7 @@ istio:
   enabled: false
   ingress:
     enabled: false
+    # gatewayName: appname-gw
     gateways: []
     hosts:
       - chart-example.local
