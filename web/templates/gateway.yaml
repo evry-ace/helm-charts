@@ -6,7 +6,7 @@ metadata:
 {{- if .Values.istio.gatewayName }}
   name: {{ .Values.istio.gatewayName }}
 {{- else }}
-  name: {{ template "nodejs.name" . }}-gateway
+  name: {{ template "web.name" . }}-gateway
 {{- end }}
   labels:
     app: {{ template "web.name" . }}
