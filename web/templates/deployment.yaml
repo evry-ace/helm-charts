@@ -49,13 +49,15 @@ spec:
               port: {{ .Values.readiness.port | default 80 }}
 {{- end }}
           env:
+          {{- if .Values.appEnv }}
           - name: APP_ENV
-            value: {{ .Values.appEnv }}
+            value: "{{ .Values.appEnv }}"
+          {{- end }}
           {{- if .Values.secrets }}
 {{ toYaml .Values.secrets | indent 10 }}
           {{- end }}
           {{- if .Values.environment }}
-{{ toYaml .Values.environment | indent 10 }}
+"{{ toYaml .Values.environment | indent 10 }}"
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
