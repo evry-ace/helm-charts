@@ -20,11 +20,15 @@ environment: {}
 secrets: {}
 
 liveness:
-  port: 80
   enabled: true
+  port: 80
+  delay: 15
+  timeout: 15
 readiness:
-  port: 80
   enabled: true
+  port: 80
+  delay: 15
+  timeout: 15
 
 service:
   type: ClusterIP
@@ -99,3 +103,14 @@ cert:
   # secretName: web-appname-tls
   # duration: 1440h
   renewBefore: 360h # 15d
+
+volumeMounts: []
+# - name: secrets
+#   mountPath: /app/secrets
+#   readOnly: true
+
+volumes: []
+# - name: secrets
+#   secret:
+#       secretName: secret-appsettings
+
