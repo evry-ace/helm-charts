@@ -41,12 +41,16 @@ spec:
             httpGet:
               path: {{ .Values.liveness.path | default "/" }}
               port: {{ .Values.liveness.port | default 80 }}
+            initialDelaySeconds: {{ .Values.liveness.delay | default 15 }}
+            timeoutSeconds: {{ .Values.liveness.timeout | default 15 }}
 {{- end }}
 {{- if and (.Values.readiness) (.Values.readiness.enabled) }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readiness.path | default "/" }}
               port: {{ .Values.readiness.port | default 80 }}
+            initialDelaySeconds: {{ .Values.readiness.delay | default 15 }}
+            timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
 {{- end }}
           env:
           {{- if .Values.appEnv }}
@@ -58,6 +62,9 @@ spec:
           {{- end }}
           {{- if .Values.environment }}
 {{ toYaml .Values.environment | indent 10 }}
+          {{- end }}
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 10 }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -72,4 +79,8 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.volumes }}
+    volumes:
+{{ toYaml .Values.volumes | indent 4 }}
     {{- end }}
