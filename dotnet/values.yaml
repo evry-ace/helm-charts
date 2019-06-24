@@ -18,7 +18,10 @@ image:
 
 environment: {}
 secrets: {}
-
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+  
 liveness:
   port: 8080
   enabled: true
