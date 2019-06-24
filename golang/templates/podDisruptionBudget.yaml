@@ -2,15 +2,16 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "web.name" . }}
+  name: {{ template "golang.name" . }}
   labels:
-    app: {{ template "web.name" . }}
-    chart: {{ template "web.chart" . }}
+    app: {{ template "golang.name" . }}
+    chart: {{ template "golang.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "web.name" . }}
+      app: {{ template "golang.name" . }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}
