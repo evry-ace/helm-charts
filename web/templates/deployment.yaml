@@ -57,14 +57,16 @@ spec:
           - name: APP_ENV
             value: "{{ .Values.appEnv }}"
           {{- end }}
-          {{- if .Values.secrets }}
-{{ toYaml .Values.secrets | indent 10 }}
-          {{- end }}
           {{- if .Values.environment }}
 {{ toYaml .Values.environment | indent 10 }}
           {{- end }}
           {{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 10 }}
+          {{- if .Values.secrets }}
+          - name: secrets
+          mountPath: "/secrets"
+          readOnly: true
+          {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -83,4 +85,9 @@ spec:
     {{- if .Values.volumes }}
     volumes:
 {{ toYaml .Values.volumes | indent 4 }}
+    {{- if .Values.secrets }}
+    - name: secrets
+      secret:
+        secretName: {{ template "web.name" . }}
+    {{- end }}
     {{- end }}
