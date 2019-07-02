@@ -22,6 +22,26 @@ secrets: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+csi: {}
+#  name: secret-pv
+#  storage: 20Mi
+#  mountPath: /mnt/secrets-store
+#  providerName: azure
+#  usePodIdentity: false
+#  keyvaultName: mazevault-test
+#  resourceGroup: resGroup
+#  subscriptionId: subId
+#  tenantId: tenantId
+#  storageClassName: mazecsistorage
+#  array:
+#    - |
+#      objectName: secret1
+#      objectType: secret
+#      objectVersion: ""
+#    - |
+#      objectName: key1
+#      objectType: key
+#      objectVersion: ""
 
 liveness:
   enabled: true
