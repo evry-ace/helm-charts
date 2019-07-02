@@ -32,11 +32,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.csi -}}
+          {{- if .Values.csi }}
           volumeMounts:
-          - name: {{ .Values.csi.name }}
-            mountPath: {{ .Values.csi.mountPath | quote }}
-            readOnly: true
+            - name: {{ .Values.csi.name }}
+              mountPath: {{ .Values.csi.mountPath | quote }}
+              readOnly: true
           {{- end }}
           # Contaner Ports
           ports:

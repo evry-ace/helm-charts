@@ -32,12 +32,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.csi -}}
+          {{- if .Values.csi }}
           volumeMounts:
-          - name: {{ .Values.csi.name }}
-            mountPath: {{ .Values.csi.mountPath | quote }}
-            readOnly: true
-          {{- end }}          
+            - name: {{ .Values.csi.name }}
+              mountPath: {{ .Values.csi.mountPath | quote }}
+              readOnly: true
+          {{- end }}         
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort | default 8080 }}
