@@ -1,0 +1,16 @@
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Release.Name}}-mtls
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "java.name" . }}
+    release: {{ .Release.Name }}
+    version: {{ .Values.appVersion }}
+spec:
+  host: {{ template "java.name" . }}
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}

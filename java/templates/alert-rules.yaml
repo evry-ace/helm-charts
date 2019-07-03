@@ -1,0 +1,16 @@
+{{- if .Values.alertRules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "java.name" . }}
+  labels:
+    app: {{ template "java.name" . }}
+    chart: {{ template "java.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.appVersion }}
+    alertmanager: {{ .Values.alertManager | default "default" }}
+spec:
+  groups:
+{{ toYaml .Values.alertRules | indent 4 }}
+{{- end }}
