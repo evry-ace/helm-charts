@@ -55,6 +55,9 @@ spec:
             httpGet:
               path: {{ .Values.readiness.path | default "/" }}
               port: {{ .Values.readiness.port | default 8080 }}
+            initialDelaySeconds: {{ .Values.readiness.delay | default 15 }}
+            timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
+            periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
 {{- end }}
           # Environment variables
           env:

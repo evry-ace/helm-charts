@@ -53,7 +53,8 @@ readiness:
   port: 80
   delay: 15
   timeout: 15
-
+  periodSeconds: 15
+  
 service:
   type: ClusterIP
   port: 80

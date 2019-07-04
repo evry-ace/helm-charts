@@ -47,7 +47,10 @@ liveness:
 readiness:
   port: 8080
   enabled: true
-
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
+  
 service:
   type: ClusterIP
   port: 80
