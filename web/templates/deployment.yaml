@@ -31,12 +31,17 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.csi }}
+          imagePullPolicy: Always
+          {{- if or (.Values.volumeMounts) (.Values.csi) }}
           volumeMounts:
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+          {{- end }}
+          {{- if .Values.csi }}
             - name: {{ .Values.csi.name }}
               mountPath: {{ .Values.csi.mountPath | quote }}
               readOnly: true
+          {{- end }}
           {{- end }}
           ports:
             - name: http
@@ -69,9 +74,6 @@ spec:
           {{- end }}
           {{- if .Values.environment }}
 {{ toYaml .Values.environment | indent 10 }}
-          {{- end }}
-          {{- if .Values.volumeMounts }}
-{{ toYaml .Values.volumeMounts | indent 10 }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
