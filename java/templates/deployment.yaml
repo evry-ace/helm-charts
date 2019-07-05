@@ -31,14 +31,11 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-
-          # Contaner Ports
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort | default 8080 }}
               protocol: TCP
-
 {{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:
             httpGet:
@@ -52,9 +49,8 @@ spec:
               port: {{ .Values.readiness.port | default 8080 }}
             initialDelaySeconds: {{ .Values.readiness.delay | default 15 }}
             timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
-            periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}              
+            periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
 {{- end }}
-          # Environment variables
           env:
 {{- if .Values.javaOptions }}
           - name: JAVA_OPTIONS
@@ -66,8 +62,6 @@ spec:
           {{- if .Values.environment }}
 {{ toYaml .Values.environment | indent 10 }}
           {{- end }}
-
-          # Container resources
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

@@ -5,13 +5,12 @@
 replicaCount: 1
 
 name: ""
-# javaOptions: 
+# javaOptions:
 appVersion: v1
 
 image:
   repository: ""
   tag: ""
-  pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
   #   - secret2
@@ -28,7 +27,7 @@ readiness:
   delay: 15
   timeout: 15
   periodSeconds: 15
-  
+
 service:
   type: ClusterIP
   port: 80
