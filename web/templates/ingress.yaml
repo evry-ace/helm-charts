@@ -35,5 +35,13 @@ spec:
             backend:
               serviceName: {{ $name }}
               servicePort: http
+  {{- if $.Values.ingress.extraServices }}
+     {{- range $.Values.ingress.extraServices.paths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .backend.serviceName }}
+              servicePort: {{ .backend.servicePort }}
+     {{- end }}  
+  {{- end }}       
   {{- end }}
 {{- end }}
