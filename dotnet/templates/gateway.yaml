@@ -3,7 +3,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-{{- if Values.istio.gatewayName }}
+{{- if .Values.istio.gatewayName }}
   name: {{ .Values.istio.gatewayName }}
 {{- else }}
   name: {{ template "dotnet.name" . }}-gateway
