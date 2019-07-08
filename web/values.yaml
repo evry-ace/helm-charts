@@ -72,7 +72,12 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
+  extraServices: {}
+  #  paths:
+  #    - path: /api
+  #      backend:
+  #        serviceName: some-other-backend
+  #        servicePort: 81
 istio:
   enabled: false
   ingress:
