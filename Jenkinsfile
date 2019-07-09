@@ -65,23 +65,25 @@ ace(opts) {
   }
 
   stage("Dry run install") {
-    withCredentials([file(credentialsId: credId, variable: credVar)]) {
-      docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
-        sh """
-          set -u
-          set -e
-          # Set Helm Home
-          export HELM_HOME=\$(pwd)
-          # Install Helm locally
-          helm init -c
+    if (!lastCommitMessage.startsWith('AUTO-RELEASE:')) {
+      withCredentials([file(credentialsId: credId, variable: credVar)]) {
+        docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
+          sh """
+            set -u
+            set -e
+            # Set Helm Home
+            export HELM_HOME=\$(pwd)
+            # Install Helm locally
+            helm init -c
 
-          # Dry run install the charts
-          helm install --dry-run --debug ./web
-          helm install --dry-run --debug ./nodejs
-          helm install --dry-run --debug ./java
-          helm install --dry-run --debug ./golang
-          helm install --dry-run --debug ./dotnet
-        """
+            # Dry run install the charts
+            helm install --dry-run --debug ./web
+            helm install --dry-run --debug ./nodejs
+            helm install --dry-run --debug ./java
+            helm install --dry-run --debug ./golang
+            helm install --dry-run --debug ./dotnet
+          """
+        }
       }
     }
   }
