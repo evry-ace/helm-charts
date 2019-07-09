@@ -23,7 +23,8 @@ ace(opts) {
     credVar = 'KUBECONFIG'
 
   stage("Init") {
-    isRelasesTag = sh(returnStdout: true, script: "git tag --contains").trim())
+    isRelasesTag = sh(returnStdout: true, script: "git tag --contains")?.trim()
+
     withCredentials([file(credentialsId: credId, variable: credVar)]) {
       docker.image(kubectlImage+':'+kubectlVersion).inside(kubectlOpts) {
           script = '''
@@ -116,7 +117,7 @@ ace(opts) {
         sh 'git add release/'
         sh 'git commit -am "Updated version of charts"'
         sh 'git tag relase-'+releaseDate
-        sh 'git push upload HEAD:master'
+        sh 'git push --tags upload HEAD:master'
 
       }
     }
