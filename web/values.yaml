@@ -15,9 +15,14 @@ image:
   #   - secret2
 
 environment: {}
-# - name: APP_ENV
-#   value: "production"
-secrets: {}
+#  - name: APP_ENV
+#    value: "production"
+secretsToEnv: {}
+#  - name: SECRET_USERNAME
+#    valueFrom:
+#      secretKeyRef:
+#        name: mysecret
+#        key: username
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
@@ -135,12 +140,25 @@ cert:
   renewBefore: 360h # 15d
 
 volumeMounts: []
-# - name: secrets
+# - name: secret-volume
 #   mountPath: /app/secrets
 #   readOnly: true
 
 volumes: []
-# - name: secrets
-#   secret:
-#       secretName: secret-appsettings
+#  - name: secret-volume
+#    secret:
+#      secretName: custom-secret
+#      items:
+#      - key: ssh-pub-key
+#        path: id_rsa.pub
 
+secrets: {}
+#  name: custom-secret
+#  data:
+    # Given by --set secrets.data.username=magne on the helm command
+#    username: user
+    # Given by --set secrets.data.password=test on the helm command
+#    password: password
+    # Given by --set secrets.data.ssh-pub-key=from_credentials_env on the helm command
+#    ssh-pub-key: ssh-pub-key
+  
