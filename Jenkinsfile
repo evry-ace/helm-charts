@@ -25,38 +25,41 @@ ace(opts) {
   stage("Init") {
     lastCommitMessage = sh(returnStdout: true, script: "git log --format=format:%s -1")?.trim()
     println lastCommitMessage
+    if (!lastCommitMessage.startsWith('AUTO-RELEASE:')) {
+      withCredentials([file(credentialsId: credId, variable: credVar)]) {
+        docker.image(kubectlImage+':'+kubectlVersion).inside(kubectlOpts) {
+            script = '''
+              kubectl get pod -n kube-system -l app=helm,name=tiller \
+                -o jsonpath="{ .items[0].spec.containers[0].image }" | cut -d ':' -f2
+            '''
+          helmVersion = sh(script: script, returnStdout: true)?.trim()
 
-    withCredentials([file(credentialsId: credId, variable: credVar)]) {
-      docker.image(kubectlImage+':'+kubectlVersion).inside(kubectlOpts) {
-          script = '''
-            kubectl get pod -n kube-system -l app=helm,name=tiller \
-              -o jsonpath="{ .items[0].spec.containers[0].image }" | cut -d ':' -f2
-          '''
-        helmVersion = sh(script: script, returnStdout: true)?.trim()
-
-        println "Helm version discovered: ${helmVersion}"
+          println "Helm version discovered: ${helmVersion}"
+        }
       }
     }
   }
 
   stage("Lint") {
-    withCredentials([file(credentialsId: credId, variable: credVar)]) {
-      docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
-        sh """
-          set -u
-          set -e
-          # Set Helm Home
-          export HELM_HOME=\$(pwd)
-          # Install Helm locally
-          helm init -c
-          
-          # Lint the charts
-          helm lint web
-          helm lint nodejs
-          helm lint java
-          helm lint golang
-          helm lint dotnet
-        """
+    if (!lastCommitMessage.startsWith('AUTO-RELEASE:')) {
+      withCredentials([file(credentialsId: credId, variable: credVar)]) {
+        docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
+          sh """
+            set -u
+            set -e
+            # Set Helm Home
+            export HELM_HOME=\$(pwd)
+            # Install Helm locally
+            helm init -c
+            
+            # Lint the charts
+            helm lint web
+            helm lint nodejs
+            helm lint java
+            helm lint golang
+            helm lint dotnet
+          """
+        }
       }
     }
   }
@@ -84,25 +87,27 @@ ace(opts) {
   }
 
   stage("Package charts") {
-    withCredentials([file(credentialsId: credId, variable: credVar)]) {
-      docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
-        sh """
-          set -u
-          set -e
-          # Set Helm Home
-          export HELM_HOME=\$(pwd)
+    if (!lastCommitMessage.startsWith('AUTO-RELEASE:')) {
+      withCredentials([file(credentialsId: credId, variable: credVar)]) {
+        docker.image(helmImage + ':' + helmVersion).inside(helmOpts) {
+          sh """
+            set -u
+            set -e
+            # Set Helm Home
+            export HELM_HOME=\$(pwd)
 
-          # Install Helm locally
-          helm init -c
+            # Install Helm locally
+            helm init -c
 
-          # Dry run install the charts
-          helm package web -d release
-          helm package nodejs -d release
-          helm package java -d release 
-          helm package golang -d release
-          helm package dotnet -d release
-          helm repo index .
-        """
+            # Dry run install the charts
+            helm package web -d release
+            helm package nodejs -d release
+            helm package java -d release 
+            helm package golang -d release
+            helm package dotnet -d release
+            helm repo index .
+          """
+        }
       }
     }
   }
@@ -125,7 +130,8 @@ ace(opts) {
   }
 
   stage("Notify all") {
-    
-    slack.notifySuccessful()
+    if (lastCommitMessage.startsWith('AUTO-RELEASE:')) {
+      slack.notifySuccessful()
+    }
   }
 }
