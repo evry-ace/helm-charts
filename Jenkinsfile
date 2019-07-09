@@ -109,7 +109,7 @@ ace(opts) {
 
   stage("Push charts") {
     if (isMaster && !isRelasesTag) {
-      releaseDate = sh(returnStdout: true, script: "date").trim()
+      releaseDate = sh(returnStdout: true, script: "date +%Y%m%d_%H%M%S").trim()
       sshagent (credentials: ['helm_chart_github_account']) {
         sh 'git config --global user.email "bgobuildserveradmin@evry.com"'
         sh 'git config --global user.name "BGOBuild ServerAdmin"'
