@@ -107,7 +107,8 @@ ace(opts) {
   stage("Push charts") {
     if (isMaster) {
       sshagent (credentials: ['helm_chart_github_account']) {
-
+        sh 'git config --global user.email "bgobuildserveradmin@evry.com"'
+        sh 'git config --global user.name "BGOBuild ServerAdmin"'
         sh 'git add index.yaml'
         sh 'git add release/'
         sh 'git commit -am "Updated version on charts"'
