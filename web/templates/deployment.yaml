@@ -35,7 +35,7 @@ spec:
           {{- if or (.Values.volumeMounts) (.Values.csi) }}
           volumeMounts:
           {{- if .Values.volumeMounts }}
-{{ toYaml .Values.volumeMounts | indent 12 }}
+{{ toYaml .Values.volumeMounts | indent 10 }}
           {{- end }}
           {{- if .Values.csi }}
             - name: {{ .Values.csi.name }}
@@ -88,7 +88,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- if or (.Values.volumes) (.Values.csi) }}
-    volumes:
+      volumes:
      {{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent 6 }}
     {{- end }}
