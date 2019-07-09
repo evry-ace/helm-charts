@@ -23,8 +23,8 @@ ace(opts) {
     credVar = 'KUBECONFIG'
 
   stage("Init") {
-    isRelasesTag = sh(returnStdout: true, script: "git tag --contains")?.trim()
-    println isRelasesTag
+    lastCommitMessage = sh(returnStdout: true, script: "git log --format=format:%s -1")?.trim()
+    println lastCommitMessage
 
     withCredentials([file(credentialsId: credId, variable: credVar)]) {
       docker.image(kubectlImage+':'+kubectlVersion).inside(kubectlOpts) {
@@ -108,7 +108,7 @@ ace(opts) {
   }
 
   stage("Push charts") {
-    if (isMaster && !isRelasesTag) {
+    if (isMaster && !lastCommitMessage.startsWith('AUTO-RELEASE:')) {
       releaseDate = sh(returnStdout: true, script: "date +%Y%m%d_%H%M%S").trim()
       sshagent (credentials: ['helm_chart_github_account']) {
         sh 'git config --global user.email "bgobuildserveradmin@evry.com"'
@@ -116,7 +116,7 @@ ace(opts) {
         sh 'git remote add upload git@github.com:evry-ace/helm-charts.git'
         sh 'git add index.yaml'
         sh 'git add release/'
-        sh 'git commit -am "Updated version of charts"'
+        sh 'git commit -am "AUTO-RELEASE: Updated version of charts"'
         sh 'git tag release-'+releaseDate
         sh 'git push --tags upload HEAD:master'
 
