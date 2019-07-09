@@ -64,13 +64,13 @@ spec:
             timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
             periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
 {{- end }}
-          {{- if or (.Values.environment) (.Values.secrets) }}
+          {{- if or (.Values.environment) (.Values.secretsToEnv) }}
           env:
           {{- if .Values.environment }}
-{{ toYaml .Values.environment | indent 10 }}
+{{ toYaml .Values.environment | indent 12}}
           {{- end }}
-          {{- if .Values.secrets }}
-{{ toYaml .Values.secrets | indent 10 }}
+          {{- if .Values.secretsToEnv }}
+{{ toYaml .Values.secretsToEnv | indent 12 }}
           {{- end }}
           {{- end }}
           resources:
