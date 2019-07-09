@@ -24,6 +24,7 @@ ace(opts) {
 
   stage("Init") {
     isRelasesTag = sh(returnStdout: true, script: "git tag --contains")?.trim()
+    println isRelasesTag
 
     withCredentials([file(credentialsId: credId, variable: credVar)]) {
       docker.image(kubectlImage+':'+kubectlVersion).inside(kubectlOpts) {
@@ -108,7 +109,7 @@ ace(opts) {
 
   stage("Push charts") {
     if (isMaster && !isRelasesTag) {
-      releaseDate = sh(returnStdout: true, script: "date").trim())
+      releaseDate = sh(returnStdout: true, script: "date").trim()
       sshagent (credentials: ['helm_chart_github_account']) {
         sh 'git config --global user.email "bgobuildserveradmin@evry.com"'
         sh 'git config --global user.name "BGOBuild ServerAdmin"'
@@ -116,7 +117,7 @@ ace(opts) {
         sh 'git add index.yaml'
         sh 'git add release/'
         sh 'git commit -am "Updated version of charts"'
-        sh 'git tag relase-'+releaseDate
+        sh 'git tag release-'+releaseDate
         sh 'git push --tags upload HEAD:master'
 
       }
