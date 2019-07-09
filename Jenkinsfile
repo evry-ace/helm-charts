@@ -111,8 +111,8 @@ ace(opts) {
         sh 'git config --global user.name "BGOBuild ServerAdmin"'
         sh 'git add index.yaml'
         sh 'git add release/'
-        sh 'git commit -am "Updated version on charts"'
-        sh 'git push'
+        sh 'git commit -am "Updated version of charts"'
+        sh 'git push origin HEAD:master'
 
       }
     }
