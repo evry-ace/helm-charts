@@ -109,10 +109,11 @@ ace(opts) {
       sshagent (credentials: ['helm_chart_github_account']) {
         sh 'git config --global user.email "bgobuildserveradmin@evry.com"'
         sh 'git config --global user.name "BGOBuild ServerAdmin"'
+        sh 'git remote add upload git@github.com:evry-ace/helm-charts.git'
         sh 'git add index.yaml'
         sh 'git add release/'
         sh 'git commit -am "Updated version of charts"'
-        sh 'git push origin HEAD:master'
+        sh 'git push upload HEAD:master'
 
       }
     }
