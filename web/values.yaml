@@ -70,13 +70,13 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
-  hosts:
-    - chart-example.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  #tlsSecretName: secret1
+  #hosts:
+  #- host: chart-example.local
+  #  path: /1
+  #- host: chart-example2.local
+  #  path: /2
+
   extraServices: {}
   #  paths:
   #    - path: /api
@@ -132,10 +132,8 @@ alertRules: []
 cert:
   enabled: true
   annotations: {}
-  hosts: []
-  issuer: letsencrypt-prod
+  issuer: letsencrypt-staging
   issuerKind: ClusterIssuer
-  # secretName: web-appname-tls
   # duration: 1440h
   renewBefore: 360h # 15d
 

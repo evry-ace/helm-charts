@@ -1,4 +1,3 @@
-{{- $hosts := .Values.cert.hosts -}}
 
 {{- if and .Values.istio.enabled (.Values.istio.ingress.enabled) }}
 {{ $hosts = .Values.istio.ingress.hosts }}
@@ -22,18 +21,16 @@ metadata:
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
-{{- if .Values.cert.secretName }}
-  secretName: {{ .Values.cert.secretName }}
-{{- else }}
-  secretName: {{ template "web.name" . }}
-{{- end }}
+  secretName: {{ .Values.ingress.tlsSecretName }}
 {{- if .Values.cert.duration }}
   duration: {{ .Values.cert.duration }}
 {{- end }}
   renewBefore: {{ .Values.cert.renewBefore }}
-  commonName: {{ index $hosts 0 }}
+  commonName: {{ (index $hosts 0).host }}
   dnsNames:
-{{ $hosts | toYaml | indent 4 }}
+  {{- range $hosts }}
+  -  {{ .host }}
+  {{- end }}
   issuerRef:
     name: {{ .Values.cert.issuer | default "letsencrypt-prod" }}
     kind: {{ .Values.cert.issuerKind | default "ClusterIssuer" }}
