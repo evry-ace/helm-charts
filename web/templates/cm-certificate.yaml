@@ -1,3 +1,4 @@
+{{- $hosts := .Values.ingress.hosts -}}
 
 {{- if and .Values.istio.enabled (.Values.istio.ingress.enabled) }}
 {{ $hosts = .Values.istio.ingress.hosts }}
