@@ -62,6 +62,15 @@ spec:
             timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
             periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
 {{- end }}
+          env:
+          - name: APP_ENV
+            value: {{ .Values.appEnv }}
+          {{- if .Values.secrets }}
+{{ toYaml .Values.secrets | indent 10 }}
+          {{- end }}
+          {{- if .Values.environment }}
+{{ toYaml .Values.environment | indent 10 }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

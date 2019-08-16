@@ -5,6 +5,7 @@
 replicaCount: 1
 
 name: ""
+appEnv: production
 appVersion: v1
 
 
