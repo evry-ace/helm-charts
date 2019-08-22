@@ -44,7 +44,7 @@ spec:
 {{- if .Values.istio.ingress.tls.secretName }}
       credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
 {{- else }}
-      credentialName: "{{ template "dotnet.name" . }}-tls"
+      credentialName: "{{ template "dotnet.name" . }}"
 {{- end }}
 {{- end }}
 
