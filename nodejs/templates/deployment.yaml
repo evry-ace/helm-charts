@@ -2,6 +2,10 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "nodejs.name" . }}
+{{ if .Values.podAnnotations }}
+  annotations:
+{{ toYaml .Values.podAnnotations | indent 4 }}
+{{- end}}
   labels:
     app: {{ template "nodejs.name" . }}
     chart: {{ template "nodejs.chart" . }}
