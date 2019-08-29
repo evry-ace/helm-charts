@@ -162,3 +162,4 @@ secrets: {}
     # Given by --set secrets.data.ssh-pub-key=from_credentials_env on the helm command
 #    ssh-pub-key: ssh-pub-key
   
+podAnnotations: {}
