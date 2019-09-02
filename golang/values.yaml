@@ -18,6 +18,7 @@ image:
 
 environment: {}
 secrets: {}
+podAnnotations: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2

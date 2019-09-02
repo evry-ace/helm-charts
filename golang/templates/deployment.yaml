@@ -21,6 +21,10 @@ spec:
         app: {{ template "golang.name" . }}
         release: {{ .Release.Name }}
         version: {{ .Values.appVersion }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end}}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
