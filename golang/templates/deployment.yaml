@@ -48,9 +48,11 @@ spec:
           {{- end }}
           {{- end }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort | default 8080 }}
-              protocol: TCP
+          {{- range .Values.service.ports }}
+          - name: {{ .name }}
+            containerPort: {{ .targetPort }}
+            protocol: TCP
+          {{- end}}
 {{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:
             httpGet:
