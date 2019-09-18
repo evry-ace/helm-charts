@@ -55,7 +55,7 @@ readiness:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8081
+  targetPort: 8080
   name: http
 
 ingress:
