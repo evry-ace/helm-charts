@@ -17,6 +17,7 @@ image:
 
 environment: {}
 secrets: {}
+podAnnotations: {}
 
 liveness:
   port: 8080
