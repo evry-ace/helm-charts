@@ -58,4 +58,31 @@ spec:
 {{- end }}
 {{- end }}
 
+{{ range $entry := .Values.egress.tcp }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-tcp"
+  labels:
+    app: {{ $name }}
+    chart: {{ $chart }}
+    release: {{ $release.Name }}
+    heritage: {{ $release.Service }}
+    version: {{ $values.appVersion }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "443" }}
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
+
 {{- end }}
