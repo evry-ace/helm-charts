@@ -25,7 +25,7 @@ spec:
     interval: {{ .Values.metrics.endpointInterval | default "15s" }}
     targetPort: {{ .Values.metrics.endpointTargetPort | default 8080 }}
     honorLabels: {{ .Values.metrics.endpointHonorLabels | default true }}
-{{- if .Values.metrics.prometheusIstioMtlsEnabled }}
+{{- if and (.Values.istio.enabled) (.Values.metrics.prometheusIstioMtlsEnabled) }}
     scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/root-cert.pem
