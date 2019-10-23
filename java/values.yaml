@@ -22,6 +22,9 @@ podAnnotations: {}
 liveness:
   port: 8080
   enabled: true
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
 readiness:
   port: 8080
   enabled: true
