@@ -47,6 +47,7 @@ jobs:
         done
     - name: Git Push
       run: |
+        sudo apt-get update && apt-get install git
         if [git diff-index --quiet HEAD -- ${HELM_PUB_DIR}]; then
           git add index.yaml
           git add ${HELM_PUB_DIR}
