@@ -35,6 +35,7 @@ jobs:
       with:
         ref: gh-pages
         path: ./release
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Helm Publish
       run: |
         ls -la ${HELM_TMP_DIR}
