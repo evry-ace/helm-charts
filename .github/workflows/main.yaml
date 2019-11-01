@@ -39,6 +39,7 @@ jobs:
       run: |
         ls -la ${HELM_TMP_DIR}
         for chart in ${HELM_TMP_DIR}/*; do
+          echo $chart
           chart=$(basename $chart)
 
           mv -vn ${HELM_TMP_DIR}/${chart} ${HELM_PUB_DIR}/${chart}
@@ -47,7 +48,7 @@ jobs:
         done
     - name: Git Push
       run: |
-        sudo apt-get update && apt-get install git
+        sudo apt-get update && sudo apt-get install git
         if [git diff-index --quiet HEAD -- ${HELM_PUB_DIR}]; then
           git add index.yaml
           git add ${HELM_PUB_DIR}
