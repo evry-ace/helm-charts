@@ -9,14 +9,15 @@
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
-  name: "{{ $name }}-{{ $entry.name }}-jwt"
+  name: {{ $entry.name }}
 spec:
   targets:
-  - name: {{ .Release.Namespace }}
+  - name: {{ $release.Namespace }}
   origins:
   - jwt:
       issuer: {{ $entry.issuer }}
       jwksUri: {{ $entry.jwksUri }}
   principalBinding: USE_ORIGIN
 {{- end }}
+
 {{- end }}
