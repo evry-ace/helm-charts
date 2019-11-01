@@ -19,3 +19,5 @@ jobs:
             && rm -vrf linux-amd64
     - name: Helm Init
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
+    - name: Helm Lint
+      run: ./test.sh
