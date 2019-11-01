@@ -15,7 +15,7 @@ jobs:
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
           | tar vxz \
-            && mv -v linux-amd64/helm /usr/local/bin/helm \
+            && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
             && rm -vrf linux-amd64
     - name: Helm Init
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
