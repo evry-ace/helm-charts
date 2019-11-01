@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +27,7 @@ jobs:
         ./package.sh ${HELM_TMP_DIR}
         ls -la ${HELM_TMP_DIR}
       env:
-        HELM_TMP_DIR: /tmp/helm-packages
+        HELM_TMP_DIR: ../publishing-dir
 
     - uses: actions/checkout@v1
       with:
