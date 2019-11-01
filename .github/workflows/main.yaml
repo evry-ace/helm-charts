@@ -24,7 +24,7 @@ jobs:
 
     - name: Helm Package
       run: |
-        mkdir ${HELM_TMP_DIR}
+        mkdir -p ${HELM_TMP_DIR}
         ./package.sh ${HELM_TMP_DIR}
         ls -la ${HELM_TMP_DIR}
       env:
