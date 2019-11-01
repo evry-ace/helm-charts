@@ -42,7 +42,11 @@ jobs:
           chart=$(basename $chart)
           echo $chart
 
-          mv -vn ${HELM_TMP_DIR}/${chart} ${HELM_PUB_DIR}/${chart}
+          if [ ! -f "{HELM_PUB_DIR}/${chart}" ]; then
+            mv -vn "${SRC_DIR}/${chart}" "${DEST_DIR}/${chart}"
+          else
+            echo "Chart $chart is already released!"
+          fi
 
           helm repo index .
         done
