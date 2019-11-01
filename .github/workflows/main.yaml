@@ -9,11 +9,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Install Helm
+    - name: Helm Install
       env:
         HELM_VERSION: v2.16.0-rc.2
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
           | tar vxz \
-            && mv -v linux-amd64/helm /bin/helm \
+            && mv -v linux-amd64/helm /bin/local/helm \
             && rm -vrf linux-amd64
+    - name: Helm Init
+      run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
