@@ -9,6 +9,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/checkout@v1
+      with:
+        ref: gh-pages
+        path: ./release
     - name: Helm Install
       env:
         HELM_VERSION: v2.16.0-rc.2
@@ -21,3 +25,5 @@ jobs:
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
     - name: Helm Lint
       run: ./test.sh
+    - name: ls
+      run: ls -la ./release
