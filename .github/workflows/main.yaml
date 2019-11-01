@@ -9,12 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - run: pwd
-    - uses: actions/checkout@v1
-      with:
-        ref: gh-pages
-        path: ./release
-    - run: pwd
     - name: Helm Install
       env:
         HELM_VERSION: v2.16.0-rc.2
@@ -27,5 +21,16 @@ jobs:
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
     - name: Helm Lint
       run: ./test.sh
-    - name: ls
-      run: ls -la ./release
+
+    - name: Helm Package
+      run: |
+        mkdir ${HELM_TMP_DIR}
+        ./package.sh ${HELM_TMP_DIR}
+        ls -la ${HELM_TMP_DIR}
+      env:
+        HELM_TMP_DIR: /tmp/helm-packages
+
+    - uses: actions/checkout@v1
+      with:
+        ref: gh-pages
+        path: ./release
