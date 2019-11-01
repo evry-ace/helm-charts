@@ -51,4 +51,6 @@ jobs:
           git add ${HELM_PUB_DIR}
           git status
           git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
-        done
+        else
+          echo "No new packages to push"
+        fi
