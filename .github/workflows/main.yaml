@@ -61,6 +61,7 @@ jobs:
           git config --global user.email "bgobuildserveradmin@evry.com"
           git config --global user.name "BGOBuild ServerAdmin"
           git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
+          git push
         else
           echo "No new packages to push"
         fi
