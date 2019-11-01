@@ -9,10 +9,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - run: pwd
     - uses: actions/checkout@v1
       with:
         ref: gh-pages
         path: ./release
+    - run: pwd
     - name: Helm Install
       env:
         HELM_VERSION: v2.16.0-rc.2
