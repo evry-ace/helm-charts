@@ -37,6 +37,7 @@ jobs:
         path: ./release
     - name: Helm Publish
       run: |
+        ls -la ${HELM_TMP_DIR}
         for chart in ${HELM_TMP_DIR}/*; do
           chart=$(basename $chart)
 
