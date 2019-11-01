@@ -5,12 +5,14 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HELM_VERSION: v2.16.0-rc.2
+      HELM_TMP_DIR: /tmp/helm-tmp-package
+      HELM_PUB_DIR: release
 
     steps:
     - uses: actions/checkout@v1
     - name: Helm Install
-      env:
-        HELM_VERSION: v2.16.0-rc.2
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
           | tar vxz \
@@ -27,8 +29,6 @@ jobs:
         mkdir -p ${HELM_TMP_DIR}
         ./helm-package.sh ${HELM_TMP_DIR}
         ls -la ${HELM_TMP_DIR}
-      env:
-        HELM_TMP_DIR: /tmp/helm-tmp-package
 
     # Publish
     - uses: actions/checkout@v1
@@ -37,16 +37,13 @@ jobs:
         path: ./release
     - name: Helm Publish
       run: |
-        for chart in ${SRC_DIR}/*; do
+        for chart in ${HELM_TMP_DIR}/*; do
           chart=$(basename $chart)
 
-          mv -vn ${SRC_DIR}/${chart} ${DEST_DIR}/${chart}
+          mv -vn ${HELM_TMP_DIR}/${chart} ${HELM_PUB_DIR}/${chart}
 
           helm repo index .
         done
-      env:
-        HELM_TMP_DIR: /tmp/helm-tmp-package
-        HELM_PUB_DIR: release
     - name: Git Push
       run: |
         if [git diff-index --quiet HEAD -- ${HELM_PUB_DIR}]; then
@@ -55,5 +52,3 @@ jobs:
           git status
           git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
         done
-      env:
-        HELM_PUB_DIR: release
