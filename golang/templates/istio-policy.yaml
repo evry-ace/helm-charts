@@ -1,0 +1,22 @@
+{{- if .Values.policy }}
+{{- $name := include "golang.name" . }}
+{{- $chart := include "golang.chart" . }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $entry := .Values.policy.jwt }}
+---
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-jwt"
+spec:
+  targets:
+  - name: {{ .Release.Namespace }}
+  origins:
+  - jwt:
+      issuer: {{ $entry.issuer }}
+      jwksUri: {{ $entry.jwksUri }}
+  principalBinding: USE_ORIGIN
+{{- end }}
+{{- end }}
