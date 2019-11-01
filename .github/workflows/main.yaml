@@ -19,17 +19,34 @@ jobs:
     - name: Helm Init
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
     - name: Helm Lint
-      run: ./test.sh
+      run: ./helm-test.sh
 
+    # Package
     - name: Helm Package
       run: |
         mkdir -p ${HELM_TMP_DIR}
-        ./package.sh ${HELM_TMP_DIR}
+        ./helm-package.sh ${HELM_TMP_DIR}
         ls -la ${HELM_TMP_DIR}
       env:
         HELM_TMP_DIR: /tmp/helm-tmp-package
 
+    # Publish
     - uses: actions/checkout@v1
       with:
         ref: gh-pages
         path: ./release
+    - name: Helm Publish
+      run: ./helm-publish.sh ${HELM_TMP_DIR} ${HELM_PUB_DIR}
+      env:
+        HELM_TMP_DIR: /tmp/helm-tmp-package
+        HELM_PUB_DIR: release
+    - name: Git Push
+      run: |
+        if [git diff-index --quiet HEAD -- ${HELM_PUB_DIR}]; then
+          git add index.yaml
+          git add ${HELM_PUB_DIR}
+          git status
+          git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
+        done
+      env:
+        HELM_PUB_DIR: release
