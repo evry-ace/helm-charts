@@ -58,6 +58,8 @@ jobs:
         if ! $(git diff-index --quiet HEAD -- ${HELM_PUB_DIR}/*); then
           git add -v index.yaml
           git status
+          git config --global user.email "bgobuildserveradmin@evry.com"
+          git config --global user.name "BGOBuild ServerAdmin"
           git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
         else
           echo "No new packages to push"
