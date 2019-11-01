@@ -48,7 +48,7 @@ jobs:
         done
     - name: Git Push
       run: |
-        if [ git diff-index --quiet HEAD -- ${HELM_PUB_DIR} ]; then
+        if [ $(git diff-index --quiet HEAD -- ${HELM_PUB_DIR}) ]; then
           git add index.yaml
           git add ${HELM_PUB_DIR}
           git status
