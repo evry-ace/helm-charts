@@ -27,7 +27,7 @@ jobs:
         ./package.sh ${HELM_TMP_DIR}
         ls -la ${HELM_TMP_DIR}
       env:
-        HELM_TMP_DIR: ../publishing-dir
+        HELM_TMP_DIR: /tmp/helm-tmp-package
 
     - uses: actions/checkout@v1
       with:
