@@ -61,7 +61,10 @@ jobs:
           git config --global user.email "bgobuildserveradmin@evry.com"
           git config --global user.name "BGOBuild ServerAdmin"
           git commit -am "AUTO-RELEASE: release Helm Charts from ${GITHUB_SHA}"
-          git push
+
+          git remote rm origin
+          git remote add origin https://scuzzlebuzzle:<MYTOKEN>@github.com/scuzzlebuzzle/ol3-1.git
+          git push "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
         else
           echo "No new packages to push"
         fi
