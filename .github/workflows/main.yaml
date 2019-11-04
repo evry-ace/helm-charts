@@ -1,10 +1,32 @@
 name: CI
 
-on: [push]
+on:
+  push:
+
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    env:
+      HELM_VERSION: v2.16.0-rc.2
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Helm Install
+      run: |
+        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+          | tar vxz \
+            && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
+            && rm -vrf linux-amd64
+    - name: Helm Lint
+      run: ./helm-test.sh
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    if: github.ref == 'refs/heads/master'
+
     env:
       HELM_VERSION: v2.16.0-rc.2
       HELM_TMP_DIR: /tmp/helm-tmp-package
@@ -20,8 +42,6 @@ jobs:
             && rm -vrf linux-amd64
     - name: Helm Init
       run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
-    - name: Helm Lint
-      run: ./helm-test.sh
 
     # Package
     - name: Helm Package
