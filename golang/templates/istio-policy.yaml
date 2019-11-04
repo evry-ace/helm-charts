@@ -12,7 +12,9 @@ metadata:
   name: {{ $entry.name }}
 spec:
   targets:
-  - name: {{ $release.Namespace }}
+  - name: {{ $values.service.name }}
+    ports:
+    - number: {{ $values.service.port }}
   origins:
   - jwt:
       issuer: {{ $entry.issuer }}
