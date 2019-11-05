@@ -1,15 +1,12 @@
-{{- if .Values.policy }}
-{{- $name := include "golang.name" . }}
-{{- $chart := include "golang.chart" . }}
-{{- $release := .Release }}
+{{- if .Values.istio.enabled }}
+{{- if .Values.istio.policy }}
 {{- $values := .Values }}
 
-{{ range $entry := .Values.policy.jwt }}
----
+{{ range $entry := .Values.istio.policy.jwt }}
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
-  name: {{ $entry.name }}
+  name: {{ $entry.name }}-jwt
 spec:
   targets:
   - name: {{ $values.service.name }}
@@ -21,5 +18,5 @@ spec:
       jwksUri: {{ $entry.jwksUri }}
   principalBinding: USE_ORIGIN
 {{- end }}
-
+{{- end }}
 {{- end }}
