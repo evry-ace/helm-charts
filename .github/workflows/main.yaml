@@ -76,9 +76,9 @@ jobs:
         if ! $(git diff-index --quiet HEAD -- ${HELM_PUB_DIR}/*); then
           git add -v index.yaml
           git status
-          git config --global user.email "ace@evry.com"
-          git config --global user.name "EVRY ACE Build Bot"
-          git commit -am "AUTO-RELEASE: release Helm Charts from master@${GITHUB_SHA}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
 
           git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
         else
