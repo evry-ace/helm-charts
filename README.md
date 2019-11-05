@@ -1,13 +1,21 @@
-# helm-charts
+# Helm Charts
+
 Official Helm Charts for the ACE Platform
 
-# Configuring egress for Istio (Allow outbound traffic)
-egress:
-  https: &sanity_api
-  - name: sanity-api
-    targets: 
-    - host: api.sanity.io
-  http: *sanity_api
+* [.NET Core](./dotnet)
+* [Go](./golang)
+* [Java](./java)
+* [Nodej.js](./nodejs)
+* [Web apps](./web)
 
-  http defaults to port 80
-  https defaults to port 443
+## Debelopment
+
+Read Helm's official [Charts Development Guide][helm-development].
+
+[helm-development]: https://helm.sh/docs/developing_charts/
+
+## Testing
+
+```
+./test.sh
+```
