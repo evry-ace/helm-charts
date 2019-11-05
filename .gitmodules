@@ -1,0 +1,3 @@
+[submodule "kiali-operator"]
+	path = kiali-operator
+	url = https://github.com/evry-ace/helm-kiali-operator.git

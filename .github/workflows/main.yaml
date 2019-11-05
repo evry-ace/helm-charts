@@ -10,6 +10,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        submodules: recursive
     - name: Helm Install
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
@@ -32,6 +34,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        submodules: recursive
     - name: Helm Install
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
