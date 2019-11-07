@@ -84,7 +84,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
 
-          git push "https://starefossen:${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "https://Starefossen:${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
         else
           echo "No new packages to push"
         fi
