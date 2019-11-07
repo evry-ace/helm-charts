@@ -57,7 +57,7 @@ jobs:
       with:
         ref: gh-pages
         path: ./release
-        token: ${{ secrets.GITHUB_PAT }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Helm Publish
       run: |
         ls -la ${HELM_TMP_DIR}
@@ -84,7 +84,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
 
-          git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "https://starefossen:${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
         else
           echo "No new packages to push"
         fi
