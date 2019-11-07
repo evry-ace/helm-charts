@@ -1,15 +1,17 @@
 {{- if .Values.istio.enabled }}
 {{- if .Values.istio.policy }}
 {{- $values := .Values }}
+{{- $relase := .Release }}
 
 {{ range $entry := .Values.istio.policy.jwt }}
+---
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
   name: {{ $entry.name }}-jwt
 spec:
   targets:
-  - name: {{ $values.service.name }}
+  - name: {{ $relase.Name }}
     ports:
     - number: {{ $values.service.port }}
   origins:
@@ -17,6 +19,10 @@ spec:
       issuer: {{ $entry.issuer }}
       jwksUri: {{ $entry.jwksUri }}
   principalBinding: USE_ORIGIN
+  peers:
+  - mtls: {}
+
 {{- end }}
+
 {{- end }}
 {{- end }}
