@@ -21,5 +21,5 @@ jobs:
           version=$(cat ${chart}/Chart.yaml | grep version | awk '{ print $2 }')
 
           git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
-          git push --tags
+          git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
         done
