@@ -1,0 +1,25 @@
+name: Tagging
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tagging:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+
+    - name: git tag
+      run: |
+        for chart in */Chart.yaml; do
+          chart=$(dirname $chart)
+          version=$(cat ${chart}/Chart.yaml | grep version | awk '{ print $2 }')
+
+          git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
+          git push --tags
+        done
