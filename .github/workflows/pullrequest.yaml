@@ -1,0 +1,22 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      HELM_VERSION: v2.16.0-rc.2
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+    - name: Helm Install
+      run: |
+        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+          | tar vxz \
+            && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
+            && rm -vrf linux-amd64
+    - name: Helm Lint
+      run: ./helm-test.sh
