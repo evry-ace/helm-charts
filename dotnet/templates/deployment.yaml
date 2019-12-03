@@ -86,13 +86,13 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- if or (.Values.volumes) (.Values.csi) }}
-    volumes:
-     {{- if .Values.volumes }}
-{{ toYaml .Values.volumes | indent 6 }}
-    {{- end }}
-    {{- if .Values.csi }}
-      - name: {{ .Values.csi.name }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.csi.name }}
-    {{ end }}
+      volumes:
+      {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+      {{- end }}
+      {{- if .Values.csi }}
+        - name: {{ .Values.csi.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.csi.name }}
+      {{ end }}
   {{ end }}
