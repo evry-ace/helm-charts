@@ -24,7 +24,7 @@ spec:
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
-{{- end}}
+{{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -58,6 +58,7 @@ spec:
               port: {{ .Values.liveness.port | default 80 }}
             initialDelaySeconds: {{ .Values.liveness.delay | default 15 }}
             timeoutSeconds: {{ .Values.liveness.timeout | default 15 }}
+            periodSeconds: {{ .Values.liveness.periodSeconds | default 15 }}
 {{- end }}
 {{- if and (.Values.readiness) (.Values.readiness.enabled) }}
           readinessProbe:
@@ -68,14 +69,9 @@ spec:
             timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
             periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
 {{- end }}
-          {{- if or (.Values.environment) (.Values.secretsToEnv) }}
+          {{- if or (.Values.environment) }}
           env:
-          {{- if .Values.environment }}
 {{ toYaml .Values.environment | indent 12}}
-          {{- end }}
-          {{- if .Values.secretsToEnv }}
-{{ toYaml .Values.secretsToEnv | indent 12 }}
-          {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

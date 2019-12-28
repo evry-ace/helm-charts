@@ -24,7 +24,7 @@ spec:
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
-{{- end}}
+{{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -96,10 +96,10 @@ spec:
       volumes:
       {{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent 8 }}
-    {{- end }}
+      {{- end }}
       {{- if .Values.csi }}
         - name: {{ .Values.csi.name }}
           persistentVolumeClaim:
             claimName: {{ .Values.csi.name }}
-    {{ end }}
+      {{ end }}
   {{ end }}
