@@ -15,11 +15,14 @@ image:
   #   - secret1
   #   - secret2
 
-environment: {}
-secrets: {}
+podAnnotations: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+environment: {}
+secrets: {}
+
 csi: {}
 #  name: secret-pv
 #  storage: 20Mi
@@ -40,9 +43,13 @@ csi: {}
 #      objectName: key1
 #      objectType: key
 #      objectVersion: ""
+
 liveness:
   port: 8080
   enabled: true
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
 readiness:
   port: 8080
   enabled: true
@@ -123,4 +130,15 @@ cert:
   # duration: 2160h # 90d (Maximum 90d)
   renewBefore: 360h # 15d
 
-podAnnotations: {}
+volumeMounts: []
+# - name: secret-volume
+#   mountPath: /app/secrets
+#   readOnly: true
+
+volumes: []
+#  - name: secret-volume
+#    secret:
+#      secretName: custom-secret
+#      items:
+#      - key: ssh-pub-key
+#        path: id_rsa.pub

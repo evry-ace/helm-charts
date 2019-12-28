@@ -14,19 +14,16 @@ image:
   #   - secret1
   #   - secret2
 
-environment: {}
-#  - name: APP_ENV
-#    value: "production"
-secretsToEnv: {}
-#  - name: SECRET_USERNAME
-#    valueFrom:
-#      secretKeyRef:
-#        name: mysecret
-#        key: username
-
+podAnnotations: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+environment: {}
+#  - name: APP_ENV
+#    value: "production"
+secrets: {}
+
 csi: {}
 #  name: secret-pv
 #  storage: 20Mi
@@ -53,6 +50,7 @@ liveness:
   port: 80
   delay: 15
   timeout: 15
+  periodSeconds: 15
 readiness:
   enabled: true
   port: 80
@@ -151,15 +149,3 @@ volumes: []
 #      items:
 #      - key: ssh-pub-key
 #        path: id_rsa.pub
-
-secrets: {}
-#  name: custom-secret
-#  data:
-    # Given by --set secrets.data.username=magne on the helm command
-#    username: user
-    # Given by --set secrets.data.password=test on the helm command
-#    password: password
-    # Given by --set secrets.data.ssh-pub-key=from_credentials_env on the helm command
-#    ssh-pub-key: ssh-pub-key
-  
-podAnnotations: {}
