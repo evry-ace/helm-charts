@@ -2,25 +2,32 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "java.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "java.name" . }}
-    chart: {{ template "java.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    app.kubernetes.io/name: {{ template "java.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "java.name" . }}
-      release: {{ .Release.Name }}
-      version: {{ .Values.appVersion }}
+      app.kubernetes.io/name: {{ template "java.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/version: {{ .Values.appVersion }}
   template:
     metadata:
       labels:
-        app: {{ template "java.name" . }}
-        release: {{ .Release.Name }}
-        version: {{ .Values.appVersion }}
+        app.kubernetes.io/name: {{ template "java.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ .Values.appComponent }}
+        app.kubernetes.io/version: {{ .Values.appVersion }}
+        app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+        app.kubernetes.io/managed-by: helm
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -32,6 +39,8 @@ spec:
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

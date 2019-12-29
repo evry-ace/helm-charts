@@ -1,0 +1,39 @@
+{{- if .Values.egress }}
+{{- $name := include "nodejs.name" . }}
+{{- $chart := include "nodejs.chart" . }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $entry := .Values.egress.http }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-http"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ template "nodejs.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  hosts:
+{{ range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  http:
+    - timeout: 5s
+{{ range $t := $entry.targets }}
+      route:
+        - destination:
+            host: {{ $t.host }}
+            port:
+              number: {{ $t.port | default "80" }}
+          weight: 100
+{{- end }}
+{{- end }}
+
+{{- end }}

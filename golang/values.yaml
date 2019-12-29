@@ -20,6 +20,9 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+securityContext:
+  runAsNonRoot: true
+
 environment: {}
 secrets: {}
 

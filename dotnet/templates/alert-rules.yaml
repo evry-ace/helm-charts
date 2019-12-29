@@ -3,12 +3,15 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ template "dotnet.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "dotnet.name" . }}
-    chart: {{ template "dotnet.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    app.kubernetes.io/name: {{ template "dotnet.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
     alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:

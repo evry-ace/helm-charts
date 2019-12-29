@@ -1,0 +1,37 @@
+{{- if .Values.egress }}
+{{- $name := include "dotnet.name" . }}
+{{- $chart := include "dotnet.chart" . }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $entry := .Values.egress.http }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-http"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ template "dotnet.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "80" }}
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
+
+{{- end }}
