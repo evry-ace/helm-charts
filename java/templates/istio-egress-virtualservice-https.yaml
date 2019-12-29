@@ -1,0 +1,43 @@
+{{- if .Values.egress }}
+{{- $name := include "java.name" . }}
+{{- $chart := include "java.chart" . }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $entry := .Values.egress.https }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-https"
+  labels:
+    app.kubernetes.io/name: {{ template "java.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  hosts:
+{{ range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  tls:
+  - match:
+{{ range $t := $entry.targets }}
+    - port: {{ $t.port | default "443" }}
+      sni_hosts:
+      - {{ $t.host}}
+{{- end }}
+    route:
+{{ range $t := $entry.targets }}
+    - destination:
+        host: {{ $t.host }}
+        port:
+          number: {{ $t.port | default "443" }}
+      weight: 100
+{{- end }}
+{{- end }}
+
+{{- end }}

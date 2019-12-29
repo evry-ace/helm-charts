@@ -19,6 +19,9 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+securityContext:
+  runAsNonRoot: true
+  
 environment: {}
 #  - name: APP_ENV
 #    value: "production"

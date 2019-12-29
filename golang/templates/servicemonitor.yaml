@@ -5,19 +5,22 @@ metadata:
   name: {{ template "golang.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang.name" . }}
-    chart: {{ template "golang.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    app.kubernetes.io/name: {{ template "golang.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ .Values.appComponent }}
+    app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- if .Values.metrics.enabled }}
     prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "golang.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "golang.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/version: {{ .Values.appVersion }}
   endpoints:
 {{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}
@@ -33,7 +36,6 @@ spec:
       certFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
       keyFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/key.pem
       insecureSkipVerify: true
-{{- end}}
-
+{{- end }}
 {{- end }}
 {{- end }}
