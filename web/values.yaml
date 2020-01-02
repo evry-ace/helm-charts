@@ -5,6 +5,8 @@
 replicaCount: 1
 
 name: ""
+appComponent: "null"
+appPartOf: "null"
 appVersion: v1
 
 image:
@@ -138,7 +140,7 @@ cert:
   issuerKind: ClusterIssuer
   # secretName: web-appname-tls
   # duration: 1440h
-  renewBefore: 360h # 15d
+  renewBefore: 360h0m0s # 15d
 
 volumeMounts: []
 # - name: secret-volume
@@ -152,3 +154,6 @@ volumes: []
 #      items:
 #      - key: ssh-pub-key
 #        path: id_rsa.pub
+
+certmanagerApiVersion: certmanager.k8s.io/v1alpha1
+deploymentApiVersion: apps/v1beta2

@@ -8,7 +8,7 @@
 
 {{- if and .Values.cert.enabled ($hosts) }}
 
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ .Values.certmanagerApiVersion }}
 kind: Certificate
 metadata:
   name: {{ template "java.name" . }}

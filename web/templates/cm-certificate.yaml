@@ -8,7 +8,7 @@
 
 {{- if and .Values.cert.enabled ($hosts) }}
 
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ .Values.certmanagerApiVersion }}
 kind: Certificate
 metadata:
   name: {{ template "web.name" . }}
@@ -16,11 +16,11 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ template "web.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-
     app.kubernetes.io/component: {{ .Values.appComponent }}
     app.kubernetes.io/version: {{ .Values.appVersion }}
+    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
+    app.kubernetes.io/managed-by: helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:
