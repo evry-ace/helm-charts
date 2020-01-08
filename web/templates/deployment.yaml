@@ -1,4 +1,9 @@
-apiVersion: {{ .Values.deploymentApiVersion }}
+{{ $k8sMinor := .Values.k8sMinor | default .Capabilities.KubeVersion.Minor }}
+{{- if gt (int $k8sMinor) 15 }}
+apiVersion: apps/v1
+{{ else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "web.name" . }}
