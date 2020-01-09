@@ -9,7 +9,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      HELM_VERSION: v2.16.0-rc.2
+      HELM_VERSION: v3.0.2
+      CONFTEST_VERSION: "0.15.0"
 
     steps:
     - uses: actions/checkout@v1
