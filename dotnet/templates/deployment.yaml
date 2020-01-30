@@ -9,30 +9,16 @@ metadata:
   name: {{ template "dotnet.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "dotnet.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "dotnet.metaLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "dotnet.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/version: {{ .Values.appVersion }}
+      {{- include "dotnet.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "dotnet.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: {{ .Values.appComponent }}
-        app.kubernetes.io/version: {{ .Values.appVersion }}
-        app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-        app.kubernetes.io/managed-by: helm
-        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- include "dotnet.metaLabels" . | nindent 8 }}
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}

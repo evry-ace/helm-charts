@@ -4,13 +4,7 @@ metadata:
   name: {{ template "web.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "web.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -19,6 +13,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ template "web.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
+    {{- include "web.selectorLabels" . | nindent 4 }}

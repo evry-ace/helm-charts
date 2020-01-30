@@ -9,13 +9,7 @@ metadata:
   name: {{ template "web.name" . }}-gateway
 {{- end }}
   labels:
-    app.kubernetes.io/name: {{ template "web.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   selector:
     istio: {{ .Values.istio.ingressGateway | default "ingressgateway" }} # use Istio default gateway implementation

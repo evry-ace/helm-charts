@@ -5,13 +5,7 @@ metadata:
   name: {{ template "dotnet.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "dotnet.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+     {{- include "dotnet.metaLabels" . | nindent 4 }}
 {{- if .Values.metrics.enabled }}
     prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}

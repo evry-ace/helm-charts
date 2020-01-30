@@ -5,13 +5,7 @@ kind: Gateway
 metadata:
   name: {{ template "java.name" . }}-gateway
   labels:
-    app.kubernetes.io/name: {{ template "java.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "java.metaLabels" . | nindent 4 }}
 spec:
   selector:
     istio: ingressgateway # use Istio default gateway implementation
