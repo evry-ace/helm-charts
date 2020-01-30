@@ -5,22 +5,14 @@ metadata:
   name: {{ template "nodejs.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "nodejs.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: {{ .Values.appComponent }}
-    app.kubernetes.io/version: {{ .Values.appVersion }}
-    app.kubernetes.io/part-of: {{ .Values.appPartOf }}
-    app.kubernetes.io/managed-by: helm
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nodejs.metaLabels" . | nindent 4 }}
 {{- if .Values.metrics.enabled }}
     prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "nodejs.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/version: {{ .Values.appVersion }}
+      {{- include "nodejs.selectorLabels" . | nindent 6 }}
   endpoints:
 {{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}
