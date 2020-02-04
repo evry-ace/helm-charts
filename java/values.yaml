@@ -151,3 +151,5 @@ volumes: []
 
 certmanagerApiVersion: cert-manager.io/v1alpha2
 k8sMinor: null
+
+deployKind: deployment
