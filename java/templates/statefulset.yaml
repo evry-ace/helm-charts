@@ -1,12 +1,6 @@
-{{ if eq .Values.deployKind "deployment" }}
-
-{{ $k8sMinor := .Values.k8sMinor | default .Capabilities.KubeVersion.Minor }}
-{{- if gt (int $k8sMinor) 15 }}
+{{- if eq .Values.deployKind "statefulset" }}
 apiVersion: apps/v1
-{{ else }}
-apiVersion: apps/v1beta1
-{{- end }}
-kind: Deployment
+kind: Statefulset
 metadata:
   name: {{ template "java.name" . }}
   namespace: {{ .Release.Namespace }}
@@ -14,6 +8,7 @@ metadata:
     {{- include "java.metaLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ template "java.name" . }}
   selector:
     matchLabels:
       {{- include "java.selectorLabels" . | nindent 6 }}
