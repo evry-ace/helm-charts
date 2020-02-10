@@ -1,6 +1,6 @@
 {{- if eq .Values.deployKind "statefulset" }}
 apiVersion: apps/v1
-kind: Statefulset
+kind: StatefulSet
 metadata:
   name: {{ template "java.name" . }}
   namespace: {{ .Release.Namespace }}
