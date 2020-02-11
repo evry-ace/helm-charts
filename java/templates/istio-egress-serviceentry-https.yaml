@@ -1,5 +1,5 @@
-{{- $name := include "golang.name" . }}
-{{- $labels := include "golang.metaLabels" . }}
+{{- $name := include "java.name" . }}
+{{- $labels := include "java.metaLabels" . }}
 {{- $namespace := .Release.Namespace}}
 
 {{- if .Values.egress }}

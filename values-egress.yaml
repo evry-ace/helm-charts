@@ -1,0 +1,5 @@
+egress:
+  http:
+  - name: api
+    targets:
+    - host: api.com

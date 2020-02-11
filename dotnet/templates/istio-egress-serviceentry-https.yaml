@@ -1,18 +1,17 @@
-{{- if .Values.egress }}
 {{- $name := include "dotnet.name" . }}
-{{- $chart := include "dotnet.chart" . }}
-{{- $release := .Release }}
-{{- $values := .Values }}
+{{- $labels := include "dotnet.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
 
+{{- if .Values.egress }}
 {{ range $entry := .Values.egress.https }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-https"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $namespace }}
   labels:
-    {{- include "dotnet.metaLabels" . | nindent 4 }}
+    {{- toYaml $labels | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}
@@ -27,5 +26,4 @@ spec:
   location: MESH_EXTERNAL
 {{- end }}
 {{- end }}
-
 {{- end }}
