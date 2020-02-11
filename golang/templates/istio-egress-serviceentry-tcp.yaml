@@ -1,6 +1,9 @@
+
 {{- if .Values.egress }}
 {{- $name := include "golang.name" . }}
+{{- $labels := include "golang.metaLabels" . }}
 {{- $chart := include "golang.chart" . }}
+{{- $namespace := .Release.Namespace}}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
@@ -10,9 +13,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-tcp"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $namespace }}
   labels:
-    {{- include "golang.metaLabels" . | nindent 4 }}
+    {{- toYaml $labels | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}
