@@ -1,18 +1,17 @@
-{{- if .Values.egress }}
 {{- $name := include "golang.name" . }}
-{{- $chart := include "golang.chart" . }}
-{{- $release := .Release }}
-{{- $values := .Values }}
+{{- $labels := include "golang.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
 
+{{- if .Values.egress }}
 {{ range $entry := .Values.egress.http }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{ $name }}-{{ $entry.name }}-http"
-  namespace: {{ .Release.Namespace }}
+  name: "{{ $name }}-http"
+  namespace: {{ $namespace }}
   labels:
-    {{- include "golang.metaLabels" . | nindent 4 }}
+    {{- toYaml $labels | nindent 4 }}
 spec:
   hosts:
 {{ range $t := $entry.targets }}
@@ -29,5 +28,4 @@ spec:
           weight: 100
 {{- end }}
 {{- end }}
-
 {{- end }}

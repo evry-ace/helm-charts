@@ -1,18 +1,17 @@
-{{- if .Values.egress }}
 {{- $name := include "dotnet.name" . }}
-{{- $chart := include "dotnet.chart" . }}
-{{- $release := .Release }}
-{{- $values := .Values }}
+{{- $labels := include "dotnet.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
 
+{{- if .Values.egress }}
 {{ range $entry := .Values.egress.https }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{ $name }}-{{ $entry.name }}-https"
-  namespace: {{ .Release.Namespace }}
+  name: "{{ $name }}"
+  namespace: {{ $namespace }}
   labels:
-    {{- include "dotnet.metaLabels" . | nindent 4 }}
+    {{ $labels | nindent 4 }}
 spec:
   hosts:
 {{ range $t := $entry.targets }}
@@ -34,5 +33,4 @@ spec:
       weight: 100
 {{- end }}
 {{- end }}
-
 {{- end }}

@@ -3,29 +3,27 @@
 {{- $namespace := .Release.Namespace}}
 
 {{- if .Values.egress }}
-{{ range $entry := .Values.egress.http }}
+{{ range $entry := .Values.egress.https }}
 ---
 apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
+kind: ServiceEntry
 metadata:
-  name: "{{ $name }}-http"
+  name: "{{ $name }}-{{ $entry.name }}-https"
   namespace: {{ $namespace }}
   labels:
     {{- toYaml $labels | nindent 4 }}
 spec:
   hosts:
-{{ range $t := $entry.targets }}
+{{- range $t := $entry.targets }}
   - {{ $t.host }}
 {{- end }}
-  http:
-    - timeout: 5s
-{{ range $t := $entry.targets }}
-      route:
-        - destination:
-            host: {{ $t.host }}
-            port:
-              number: {{ $t.port | default "80" }}
-          weight: 100
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "443" }}
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
 {{- end }}
 {{- end }}
 {{- end }}
