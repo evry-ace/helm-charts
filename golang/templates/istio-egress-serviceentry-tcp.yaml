@@ -1,4 +1,5 @@
 
+{{- if .Values.egress }}
 {{- $name := include "golang.name" . }}
 {{- $labels := include "golang.metaLabels" . }}
 {{- $chart := include "golang.chart" . }}
@@ -6,7 +7,6 @@
 {{- $release := .Release }}
 {{- $values := .Values }}
 
-{{- if .Values.egress }}
 {{ range $entry := .Values.egress.tcp }}
 ---
 apiVersion: networking.istio.io/v1alpha3
