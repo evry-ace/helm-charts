@@ -5,9 +5,7 @@ metadata:
   name: {{ .Release.Name}}-mtls
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "web.name" . }}
-    release: {{ .Release.Name }}
-    version: {{ .Values.appVersion }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   host: {{ template "web.name" . }}
   trafficPolicy:

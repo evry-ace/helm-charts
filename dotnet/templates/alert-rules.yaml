@@ -3,12 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ template "dotnet.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "dotnet.name" . }}
-    chart: {{ template "dotnet.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+      {{- include "dotnet.metaLabels" . | nindent 4 }}
     alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:

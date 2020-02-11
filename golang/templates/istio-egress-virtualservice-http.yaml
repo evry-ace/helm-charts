@@ -1,0 +1,31 @@
+{{- $name := include "golang.name" . }}
+{{- $labels := include "golang.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
+
+{{- if .Values.egress }}
+{{ range $entry := .Values.egress.http }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{ $name }}-http"
+  namespace: {{ $namespace }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+spec:
+  hosts:
+{{ range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  http:
+    - timeout: 5s
+{{ range $t := $entry.targets }}
+      route:
+        - destination:
+            host: {{ $t.host }}
+            port:
+              number: {{ $t.port | default "80" }}
+          weight: 100
+{{- end }}
+{{- end }}
+{{- end }}

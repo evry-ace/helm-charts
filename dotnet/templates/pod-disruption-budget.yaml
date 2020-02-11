@@ -1,0 +1,16 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "dotnet.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "dotnet.metaLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "dotnet.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/version: {{ .Values.appVersion }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end -}}

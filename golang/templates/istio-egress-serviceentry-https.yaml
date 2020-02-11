@@ -1,0 +1,29 @@
+{{- $name := include "golang.name" . }}
+{{- $labels := include "golang.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
+
+{{- if .Values.egress }}
+{{ range $entry := .Values.egress.https }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-https"
+  namespace: {{ $namespace }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "443" }}
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
+{{- end }}

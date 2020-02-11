@@ -1,16 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $name := include "nodejs.name" . -}}
+{{- $name := include "golang.name" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang.name" . }}
-    chart: {{ template "golang.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    {{- include "golang.metaLabels" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

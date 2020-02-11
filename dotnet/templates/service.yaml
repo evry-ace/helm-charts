@@ -2,12 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "dotnet.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "dotnet.name" . }}
-    chart: {{ template "dotnet.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+     {{- include "dotnet.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -16,5 +13,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "dotnet.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "dotnet.selectorLabels" . | nindent 4 }}

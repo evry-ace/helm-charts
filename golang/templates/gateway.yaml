@@ -8,12 +8,9 @@ metadata:
 {{- else }}
   name: {{ template "golang.name" . }}-gateway
 {{- end }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "golang.name" . }}
-    chart: {{ template "golang.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    {{- include "golang.metaLabels" . | nindent 4 }}
 spec:
   selector:
     istio: {{ .Values.istio.ingressGateway | default "ingressgateway" }} # use Istio default gateway implementation

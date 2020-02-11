@@ -1,15 +1,29 @@
-name: CI
+name: Release
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      HELM_VERSION: v2.16.0-rc.2
+      HELM_VERSION: v3.0.2
+      CONFTEST_VERSION: "0.15.0"
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+    - name: Conftest Install
+      run: |
+        curl -sSL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz \
+          | tar vxz \
+            && sudo mv -v conftest /usr/local/bin/conftest
+    - name: Install YQ
+      run: |
+        curl -sSL https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64 -o yq && chmod +x yq && sudo mv yq /usr/local/bin
     - name: Helm Install
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
@@ -32,6 +46,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        submodules: recursive
     - name: Helm Install
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
@@ -69,6 +85,7 @@ jobs:
 
           helm repo index .
         done
+
     - name: Git Push
       run: |
         git add -v ${HELM_PUB_DIR}
@@ -76,11 +93,11 @@ jobs:
         if ! $(git diff-index --quiet HEAD -- ${HELM_PUB_DIR}/*); then
           git add -v index.yaml
           git status
-          git config --global user.email "ace@evry.com"
-          git config --global user.name "EVRY ACE Build Bot"
-          git commit -am "AUTO-RELEASE: release Helm Charts from master@${GITHUB_SHA}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
 
-          git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "https://${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
         else
           echo "No new packages to push"
         fi

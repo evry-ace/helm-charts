@@ -10,12 +10,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-http"
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ $name }}
-    chart: {{ $chart }}
-    release: {{ $release.Name }}
-    heritage: {{ $release.Service }}
-    version: {{ $values.appVersion }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}
@@ -37,12 +34,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-https"
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ $name }}
-    chart: {{ $chart }}
-    release: {{ $release.Name }}
-    heritage: {{ $release.Service }}
-    version: {{ $values.appVersion }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}

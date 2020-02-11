@@ -3,13 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ template "nodejs.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "nodejs.name" . }}
-    chart: {{ template "nodejs.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
-    alertmanager: {{ .Values.alertManager | default "default" }}
+    {{- include "nodejs.metaLabels" . | nindent 4 }}
 spec:
   groups:
 {{ toYaml .Values.alertRules | indent 4 }}

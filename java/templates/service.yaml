@@ -2,12 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "java.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "java.name" . }}
-    chart: {{ template "java.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    {{- include "java.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -16,5 +13,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "java.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "java.selectorLabels" . | nindent 4 }}

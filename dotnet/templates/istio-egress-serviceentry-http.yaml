@@ -1,0 +1,29 @@
+{{- $name := include "dotnet.name" . }}
+{{- $labels := include "dotnet.metaLabels" . }}
+{{- $namespace := .Release.Namespace}}
+
+{{- if .Values.egress }}
+{{ range $entry := .Values.egress.http }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-http"
+  namespace: {{ $namespace }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "80" }}
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
+{{- end }}

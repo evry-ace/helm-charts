@@ -5,19 +5,14 @@ metadata:
   name: {{ template "web.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "web.name" . }}
-    chart: {{ template "web.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 {{- if .Values.metrics.enabled }}
     prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "web.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "web.selectorLabels" . | nindent 8 }}
   endpoints:
 {{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}
@@ -33,7 +28,6 @@ spec:
       certFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/cert-chain.pem
       keyFile: /etc/prometheus/secrets/istio.{{ .Values.metrics.prometheusIstioSecret }}/key.pem
       insecureSkipVerify: true
-{{- end}}
-
+{{- end }}
 {{- end }}
 {{- end }}

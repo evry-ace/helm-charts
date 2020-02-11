@@ -1,0 +1,29 @@
+name: Tagging
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tagging:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+
+    - name: git tag
+      run: |
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git config --global user.name "${GITHUB_ACTOR}"
+
+        for chart in */Chart.yaml; do
+          chart=$(dirname $chart)
+          version=$(cat ${chart}/Chart.yaml | grep version | awk '{ print $2 }')
+
+          git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
+        done
+
+        git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"

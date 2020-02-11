@@ -11,11 +11,7 @@ kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-http"
   labels:
-    app: {{ $name }}
-    chart: {{ $chart }}
-    release: {{ $release.Name }}
-    heritage: {{ $release.Service }}
-    version: {{ $values.appVersion }}
+    {{- include "java.metaLabels" . | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}
@@ -38,11 +34,7 @@ kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-https"
   labels:
-    app: {{ $name }}
-    chart: {{ $chart }}
-    release: {{ $release.Name }}
-    heritage: {{ $release.Service }}
-    version: {{ $values.appVersion }}
+    {{- include "java.metaLabels" . | nindent 4 }}
 spec:
   hosts:
 {{- range $t := $entry.targets }}

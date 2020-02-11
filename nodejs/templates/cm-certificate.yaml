@@ -8,17 +8,13 @@
 
 {{- if and .Values.cert.enabled ($hosts) }}
 
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ .Values.certmanagerApiVersion }}
 kind: Certificate
 metadata:
   name: {{ template "nodejs.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "nodejs.name" . }}
-    chart: {{ template "nodejs.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    version: {{ .Values.appVersion }}
+    {{- include "nodejs.metaLabels" . | nindent 4 }}
   annotations:
 {{ toYaml .Values.cert.annotations | indent 4 }}
 spec:

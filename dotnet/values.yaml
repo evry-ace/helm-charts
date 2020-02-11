@@ -1,4 +1,4 @@
-# Default values for nodejs.
+# Default values for dotnet.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,6 +6,8 @@ replicaCount: 1
 
 name: ""
 appEnv: production
+appComponent: "null"
+appPartOf: "null"
 appVersion: v1
 
 image:
@@ -15,11 +17,17 @@ image:
   #   - secret1
   #   - secret2
 
-environment: {}
-secrets: {}
+podAnnotations: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+securityContext:
+  runAsNonRoot: true
+
+environment: {}
+secrets: {}
+
 csi: {}
 #  name: secret-pv
 #  storage: 20Mi
@@ -40,9 +48,13 @@ csi: {}
 #      objectName: key1
 #      objectType: key
 #      objectVersion: ""
+
 liveness:
   port: 8080
   enabled: true
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
 readiness:
   port: 8080
   enabled: true
@@ -54,6 +66,7 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 8080
+  name: http
 
 ingress:
   enabled: false
@@ -80,7 +93,6 @@ istio:
       enabled: true
       httpsRedirect: false
       # secretName: chart-example-tls
-
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -122,4 +134,20 @@ cert:
   issuerKind: ClusterIssuer
   # secretName: dotnet-appname-tls
   # duration: 2160h # 90d (Maximum 90d)
-  renewBefore: 360h # 15d
+  renewBefore: 360h0m0s # 15d
+
+volumeMounts: []
+# - name: secret-volume
+#   mountPath: /app/secrets
+#   readOnly: true
+
+volumes: []
+#  - name: secret-volume
+#    secret:
+#      secretName: custom-secret
+#      items:
+#      - key: ssh-pub-key
+#        path: id_rsa.pub
+
+certmanagerApiVersion: cert-manager.io/v1alpha2
+k8sMinor: null

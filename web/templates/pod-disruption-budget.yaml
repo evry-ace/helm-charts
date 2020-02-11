@@ -3,14 +3,12 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "web.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "web.name" . }}
-    chart: {{ template "web.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "web.metaLabels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "web.name" . }}
+      {{- include "web.selectorLabels" . | nindent 8 }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}
