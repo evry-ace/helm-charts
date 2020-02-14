@@ -8,7 +8,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{ $name }}-http"
+  name: "{{ $name }}-{{ $entry.name }}-http"
   namespace: {{ $namespace }}
   labels:
     {{- toYaml $labels | nindent 4 }}
