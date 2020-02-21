@@ -1,0 +1,34 @@
+
+{{- if .Values.egress }}
+{{- $name := include "java.name" . }}
+{{- $labels := include "java.metaLabels" . }}
+{{- $chart := include "java.chart" . }}
+{{- $namespace := .Release.Namespace}}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $entry := .Values.egress.tcp }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $entry.name }}-tcp"
+  namespace: {{ $namespace }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+spec:
+  hosts:
+{{- range $t := $entry.targets }}
+  - {{ $t.host }}
+{{- end }}
+  ports:
+{{- range $t := $entry.targets }}
+  - number: {{ $t.port | default "443" }}
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
+
+{{- end }}
