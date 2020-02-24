@@ -6,8 +6,6 @@ replicaCount: 1
 
 name: ""
 # javaOptions:
-appComponent: "null"
-appPartOf: "null"
 appVersion: v1
 
 image:
