@@ -16,9 +16,9 @@ Create chart name and version as used by the chart label.
 {{- define "nodejs.metaLabels" -}}
 app.kubernetes.io/name: {{ template "nodejs.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: {{ default (include "nodejs.name" .) .Values.appComponent }}
+app.kubernetes.io/component: {{ default .Values.appComponent (include "nodejs.name" .) }}
 app.kubernetes.io/version: {{ .Values.appVersion }}
-app.kubernetes.io/part-of: {{ default (include "nodejs.name" .) .Values.appPartOf}}
+app.kubernetes.io/part-of: {{ default .Values.appPartOf (include "nodejs.name" .) }}
 app.kubernetes.io/managed-by: helm
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- end -}}
