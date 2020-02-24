@@ -16,9 +16,9 @@ Create chart name and version as used by the chart label.
 {{- define "golang.metaLabels" -}}
 app.kubernetes.io/name: {{ template "golang.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: {{ default (include "golang.name" .) .Values.appComponent }}
+app.kubernetes.io/component: {{ default .Values.appComponent (include "golang.name" .) }}
 app.kubernetes.io/version: {{ .Values.appVersion }}
-app.kubernetes.io/part-of: {{ default (include "golang.name" .) .Values.appPartOf}}
+app.kubernetes.io/part-of: {{ default .Values.appPartOf (include "golang.name" .) }}
 app.kubernetes.io/managed-by: helm
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- end -}}
