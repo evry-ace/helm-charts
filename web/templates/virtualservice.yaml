@@ -27,5 +27,5 @@ spec:
         port:
           number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
         host: "{{ template "web.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-      weight: 80
+      weight: 100
 {{- end }}
