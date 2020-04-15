@@ -78,6 +78,11 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  
+traefikV2:
+  enabled: false
+  middlewares: []
+  routes: []
 
 istio:
   enabled: false

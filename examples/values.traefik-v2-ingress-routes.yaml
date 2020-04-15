@@ -1,0 +1,33 @@
+traefikV2:
+  ingressRoutes:
+    - name: default
+      spec:
+        routes:
+        - kind: Rule
+          match: ((`www.foo.com`) && Path(`/admin`))
+          priority: 10
+          middlewares:
+            - name: ip-whitelist-middleware
+          services:
+            - kind: Service
+              name: foo
+              passHostHeader: true
+              responseForwarding:
+                flushInterval: 1ms
+              scheme: http
+              strategy: RoundRobin
+              weight: 10
+        tls:
+          secretName: foo
+          domains:
+            - main: foo.com
+              sans:
+                - a.foo.com
+  middlewares:
+    - name: ip-whitelist-middleware
+      spec:
+        ipWhiteList:
+          sourceRange:
+            - "10.0.0.0/8"
+          ipStrategy:
+            depth: 2
