@@ -82,7 +82,7 @@ ingress:
 traefikV2:
   enabled: false
   middlewares: []
-  routes: []
+  ingressRoutes: []
 
 istio:
   enabled: false

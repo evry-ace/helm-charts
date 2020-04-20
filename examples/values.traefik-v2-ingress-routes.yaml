@@ -1,4 +1,5 @@
 traefikV2:
+  enabled: true
   ingressRoutes:
     - name: default
       spec:
