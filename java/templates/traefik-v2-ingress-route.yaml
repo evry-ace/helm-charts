@@ -1,0 +1,15 @@
+{{- if .Values.traefikV2.enabled }}
+{{- $name := include "java.name" . }}
+{{- $labels := include "java.metaLabels" . }}
+{{ range $i := .Values.traefikV2.ingressRoutes }}
+---
+apiVersion: traefik.containo.us
+kind: IngressRoute
+metadata:
+  name: "{{ $name }}-{{ $i.name }}"
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  {{- toYaml $i.spec | nindent 2 }}
+{{- end }}
+{{- end }}
