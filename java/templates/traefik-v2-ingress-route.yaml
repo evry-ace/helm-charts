@@ -3,7 +3,7 @@
 {{- $labels := include "java.metaLabels" . }}
 {{ range $i := .Values.traefikV2.ingressRoutes }}
 ---
-apiVersion: traefik.containo.us
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: "{{ $name }}-{{ $i.name }}"
