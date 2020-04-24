@@ -1,5 +1,4 @@
-{{ $k8sMinor := .Values.k8sMinor | default .Capabilities.KubeVersion.Minor }}
-{{- if gt (int $k8sMinor) 15 }}
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
 {{ else }}
 apiVersion: apps/v1beta1

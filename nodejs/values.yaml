@@ -147,4 +147,3 @@ volumes: []
 #        path: id_rsa.pub
 
 certmanagerApiVersion: cert-manager.io/v1alpha2
-k8sMinor: null
