@@ -2,6 +2,8 @@ traefikV2:
   enabled: true
   ingressRoutes:
     - name: default
+      annotations:
+        test: test
       spec:
         routes:
         - kind: Rule
