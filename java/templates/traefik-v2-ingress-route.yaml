@@ -7,6 +7,10 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: "{{ $name }}-{{ $i.name }}"
+  {{- if $i.annotations }}
+  annotations:
+  {{ toYaml $i.annotations | nindent 4 }}
+  {{- end }}
   labels:
     {{- $labels | nindent 4 }}
 spec:

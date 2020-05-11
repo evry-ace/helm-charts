@@ -81,6 +81,7 @@ ingress:
   
 traefikV2:
   enabled: false
+  annotations: {}
   middlewares: []
   ingressRoutes: []
 
