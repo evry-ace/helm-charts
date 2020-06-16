@@ -5,7 +5,7 @@ metadata:
   name: {{ template "dotnet.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-      {{- include "dotnet.metaLabels" . | nindent 4 }}
+    {{- include "dotnet.metaLabels" . | nindent 4 }}
     alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:
