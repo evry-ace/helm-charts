@@ -11,6 +11,9 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort | default "http" }}
       protocol: TCP
-      name: http
+      name: {{ .Values.service.name | default "http" }}
+    {{ if .Values.service.extraPorts }}
+    {{ toYaml .Values.service.extraPorts | nindent 12 }}
+    {{- end }}
   selector:
     {{- include "nodejs.selectorLabels" . | nindent 4 }}

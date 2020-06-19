@@ -64,6 +64,7 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 8080
+  extraPorts: []
 
 ingress:
   enabled: false
@@ -90,6 +91,8 @@ istio:
       enabled: true
       httpsRedirect: false
       # secretName: chart-example-tls
+
+extraPorts: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
