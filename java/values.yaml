@@ -65,6 +65,7 @@ service:
   port: 80
   targetPort: 8080
   name: http
+  extraPorts: []
 
 ingress:
   enabled: false

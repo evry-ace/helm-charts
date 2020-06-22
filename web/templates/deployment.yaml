@@ -50,6 +50,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort | default 80 }}
               protocol: TCP
+            {{ if .Values.extraPorts }}
+            {{ toYaml .Values.extraPorts | nindent 12 }}
+            {{- end }}
 {{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:
             httpGet:

@@ -49,7 +49,7 @@ spec:
               containerPort: {{ .Values.service.targetPort | default 8080 }}
               protocol: TCP
             {{ if .Values.extraPorts }}
-            {{ .Values.extraPorts | nindent 12 }}
+            {{ toYaml .Values.extraPorts | nindent 12 }}
             {{- end }}
 {{- if and (.Values.liveness) (.Values.liveness.enabled) }}
           livenessProbe:

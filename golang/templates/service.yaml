@@ -12,5 +12,8 @@ spec:
       targetPort: {{ .Values.service.targetPort | default "http" }}
       protocol: TCP
       name: {{ .Values.service.name | default "http" }}
+    {{ if .Values.service.extraPorts }}
+    {{ toYaml .Values.service.extraPorts | nindent 12 }}
+    {{- end }}
   selector:
     {{- include "golang.selectorLabels" . | nindent 4 }}
