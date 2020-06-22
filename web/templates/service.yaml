@@ -13,7 +13,7 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name | default "http" }}
     {{ if .Values.service.extraPorts }}
-    {{ toYaml .Values.service.extraPorts | nindent 12 }}
+    {{ toYaml .Values.service.extraPorts | nindent 4 }}
     {{- end }}
   selector:
     {{- include "web.selectorLabels" . | nindent 4 }}
