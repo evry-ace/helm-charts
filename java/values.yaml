@@ -116,6 +116,12 @@ nodeSelector: {}
 
 tolerations: []
 
+## Pod affinity
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
 affinity: {}
 
 # We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
