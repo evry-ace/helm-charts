@@ -98,8 +98,7 @@ spec:
             - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
               labelSelector:
                 matchLabels:
-                  app: {{ template "golang.name" . }}
-                  release: {{ .Release.Name }}
+                  {{- include "golang.selectorLabels" . | nindent 18 }}
       {{- else if eq .Values.podAntiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -108,8 +107,7 @@ spec:
                 topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
                 labelSelector:
                   matchLabels:
-                    app: {{ template "golang.name" . }}
-                    release: {{ .Release.Name }}
+                    {{- include "golang.selectorLabels" . | nindent 20 }}
       {{- end }}
     {{- end }}
 
