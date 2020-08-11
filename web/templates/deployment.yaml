@@ -81,10 +81,31 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+
+    {{- if or .Values.affinity .Values.podAntiAffinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
+              labelSelector:
+                matchLabels:
+                  {{- include "web.selectorLabels" . | nindent 18 }}
+      {{- else if eq .Values.podAntiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
+                labelSelector:
+                  matchLabels:
+                    {{- include "web.selectorLabels" . | nindent 20 }}
+      {{- end }}
     {{- end }}
+
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
