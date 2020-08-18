@@ -16,6 +16,7 @@ image:
   #   - secret2
 
 podAnnotations: {}
+podLabels: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
