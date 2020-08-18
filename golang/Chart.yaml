@@ -1,4 +1,4 @@
 apiVersion: v1
 description: golan Helm Chart
 name: golang
-version: 11.2.0
+version: 11.3.0
