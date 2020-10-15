@@ -20,7 +20,8 @@ podLabels: {}
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
-
+  
+serviceAccountName: default
 securityContext:
   runAsNonRoot: true
   
