@@ -30,6 +30,7 @@ spec:
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       containers:
