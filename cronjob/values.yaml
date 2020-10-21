@@ -9,11 +9,11 @@ job:
   concurrencyPolicy: Forbid  #  Allow (default): The cron job allows concurrently running jobs
                              #  Forbid: The cron job does not allow concurrent runs; if it is time for a new job run and the previous job run hasn't finished yet, the cron job skips the new job run
                              #  Replace: If it is time for a new job run and the previous job run hasn't finished yet, the cron job replaces the currently running job run with a new job run
-  args:
-    - /bin/sh
-    - -c
-    - date; echo Hello from the Kubernetes cluster
-  command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"] 
+#  args:                     #  optional to add args to cron job
+#    - /bin/sh               #  can add an array of args to cron job 
+#    - -c
+#    - date; echo Hello from the Kubernetes cluster
+#  command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"] # optional command to pass to container
 
 image:
   repository: ""
