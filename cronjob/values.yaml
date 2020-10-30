@@ -22,3 +22,14 @@ image:
   #   - secret1
   #   - secret2
 
+podAnnotations: {}
+
+podLabels: {} 
+  
+environment: {}
+
+istio:
+  enabled: false
+  tlsMode: "istio"
+  revision: "v1"
+
