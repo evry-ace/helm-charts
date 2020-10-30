@@ -13,46 +13,31 @@ spec:
   {{- end}}
   schedule: {{ .Values.job.schedule | quote }}
   jobTemplate:
+    metadata:
+      labels:
+        {{- include "cronjob.metaLabels" . | nindent 8 }}
     spec:
       template:
+        metadata:
+        {{- if .Values.podAnnotations }}
+          annotations:
+          {{ toYaml .Values.podAnnotations | indent 4 }}
+        {{- end }}
+          labels:
+            {{- include "cronjob.metaLabels" . | nindent 12 }}
+            {{- if .Values.istio.enabled }}
+            security.istio.io/tlsMode: istio
+            service.istio.io/canonical-name: "{{ .Release.Name }}-{{ .Values.job.name }}"
+            service.istio.io/canonical-revision: v1
+            {{- end }}
         spec:
           containers:
-          - name: "{{ .Release.Name }}-{{ .Values.job.name }}"
-            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-            imagePullPolicy: Always
-            {{- if .Values.image.pullSecrets }}
-            imagePullSecrets:
-            {{- range $pullSecret := .Values.image.pullSecrets }}
-              - name: {{ $pullSecret }}
-              {{- end }}
-            {{- end }}
-            {{- if or (.Values.volumeMounts) (.Values.csi) }}
-            volumeMounts:
-            {{- if .Values.volumeMounts }}
-            {{ toYaml .Values.volumeMounts | indent 12 }}
-            {{- end }}
-            {{- if .Values.csi }}
-              - name: {{ .Values.csi.name }}
-                mountPath: {{ .Values.csi.mountPath | quote }}
-                readOnly: true
-            {{- end }}
-            {{- end }}
-            {{- if .Values.job.args }}
-            args:
-              {{- range $arg := .Values.job.args }}
-              - {{ $arg }}
-              {{- end }}
-            {{- end }}
-            {{- if .Values.job.command }}
-            command: {{ .Values.job.command }}
-            {{- end }}
-            env:
+            - name: "{{ .Release.Name }}-{{ .Values.job.name }}"
+              env:
               - name: APP_ENV
                 value: {{ .Values.appEnv }}
-              {{- if .Values.secrets }}
-              {{ toYaml .Values.secrets | indent 10 }}
-              {{- end }}
-              {{- if .Values.environment }}
-              {{ toYaml .Values.environment | indent 10 }}
-              {{- end }}
-          restartPolicy: OnFailure
+            {{-  if .Values.environment }}
+{{ toYaml .Values.environment | indent 14 }}
+            {{- end}}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: Always
