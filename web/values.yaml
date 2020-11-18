@@ -8,6 +8,8 @@ name: ""
 appVersion: v1
 
 image:
+  # Full image repository with tag, usefull for Flux automation
+  # image: ""
   repository: ""
   tag: ""
   # pullSecrets:

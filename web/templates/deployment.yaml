@@ -36,7 +36,11 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if .Values.image.image }}
+          image: "{{ .Values.image.image }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: Always
           {{- if or (.Values.volumeMounts) (.Values.csi) }}
           volumeMounts:
