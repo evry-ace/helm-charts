@@ -24,7 +24,11 @@ spec:
       {{- range .hosts }}
         - {{ . }}
       {{- end }}
+      {{- if .secretName }}
       secretName: {{ .secretName }}
+      {{- else }}
+      secretName: {{ $name }}
+      {{- end }}
   {{- end }}
 {{- end }}
   rules:
