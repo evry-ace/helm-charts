@@ -7,9 +7,10 @@ replicaCount: 1
 name: ""
 appVersion: v1
 
+
+# Full image repository with tag, needed for Flux automation
+# image: "my.repo.io/my/image:my-tag"
 image:
-  # Full image repository with tag, usefull for Flux automation
-  # image: ""
   repository: ""
   tag: ""
   # pullSecrets:
@@ -24,7 +25,7 @@ podDisruptionBudget: {}
 
 securityContext:
   runAsNonRoot: true
-  
+
 environment: {}
 #  - name: APP_ENV
 #    value: "production"
