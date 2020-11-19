@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         {{- include "web.metaLabels" . | nindent 8 }}
-        {{- if .Values.podLabels }}        
+        {{- if .Values.podLabels }}
         {{ toYaml .Values.podLabels | nindent 8 }}
         {{- end -}}
 {{- if .Values.podAnnotations }}
@@ -26,18 +26,20 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if not (typeIs "string" .Values.image) }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
+{{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if .Values.image.image }}
-          image: "{{ .Values.image.image }}"
+          {{- if typeIs "string" .Values.image }}
+          image: "{{ .Values.image }}"
           {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- end }}
