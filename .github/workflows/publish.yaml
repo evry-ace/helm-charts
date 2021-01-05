@@ -13,7 +13,7 @@ jobs:
       CONFTEST_VERSION: "0.15.0"
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
     - name: Conftest Install
@@ -45,7 +45,7 @@ jobs:
       HELM_PUB_DIR: release
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
     - name: Helm Install
@@ -65,7 +65,7 @@ jobs:
         ls -la ${HELM_TMP_DIR}
 
     # Publish
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         ref: gh-pages
         path: ./release
