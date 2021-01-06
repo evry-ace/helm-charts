@@ -50,7 +50,7 @@ jobs:
         submodules: recursive
     - name: Helm Install
       run: |
-        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
+        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
           | tar vxz \
             && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
             && rm -vrf linux-amd64
