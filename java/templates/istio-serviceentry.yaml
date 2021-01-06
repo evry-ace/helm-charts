@@ -1,0 +1,23 @@
+
+{{- if .Values.istio.serviceentry }}
+{{- $name := include "java.name" . }}
+{{- $labels := include "java.metaLabels" . }}
+{{- $chart := include "java.chart" . }}
+{{- $namespace := .Release.Namespace}}
+{{- $release := .Release }}
+{{- $values := .Values }}
+
+{{ range $serviceentry := .Values.istio.serviceentry }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: "{{ $name }}-{{ $serviceentry.name }}"
+  namespace: {{ $namespace }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+spec:
+  {{- toYaml $serviceentry.spec | nindent 2 }}
+{{- end }}
+
+{{- end }}
