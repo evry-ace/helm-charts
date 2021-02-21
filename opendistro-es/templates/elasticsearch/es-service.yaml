@@ -12,7 +12,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-{{- if .Values.elasticsearch.client.enabled }}
+# @formatter:off
 kind: Service
 apiVersion: v1
 metadata:
@@ -31,7 +31,12 @@ spec:
       port: 9300
     - name: metrics
       port: 9600
+    - name: rca
+      port: 9650
   selector:
+  {{- if .Values.elasticsearch.client.dedicatedPod.enabled }}
     role: client
+  {{- else }}
+    role: master
+  {{- end }}
   type: {{ .Values.elasticsearch.client.service.type }}
-{{- end }}

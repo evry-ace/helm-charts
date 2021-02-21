@@ -12,6 +12,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+# @formatter:off
 {{- if .Values.elasticsearch.master.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -23,9 +24,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.elasticsearch.master.replicas }}
-  selector: 
+  selector:
     matchLabels:
-{{ include "opendistro-es.labels.standard" . | indent 6 }}
+{{ include "opendistro-es.labels.selector" . | indent 6 }}
       role: master
   updateStrategy:
     type: {{ .Values.elasticsearch.master.updateStrategy }}
@@ -54,35 +55,39 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-      # Anti-affinity to disallow deploying client and master nodes on the same worker node
+    {{- with .Values.elasticsearch.master.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchLabels:
-                role: master
-      {{- with .Values.elasticsearch.master.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml . | indent 10 }}
-      {{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
       initContainers:
+{{- if .Values.elasticsearch.sysctl.enabled }}
       - name: init-sysctl
-        image: {{ .Values.elasticsearch.initContainer.image }}:{{ .Values.elasticsearch.initContainer.imageTag }}
+        image: {{ .Values.global.registry }}/{{ .Values.elasticsearch.initContainer.image }}:{{ .Values.elasticsearch.initContainer.imageTag }}
         command:
         - sysctl
         - -w
         - vm.max_map_count={{ .Values.elasticsearch.maxMapCount }}
         securityContext:
           privileged: true
+{{- end }}
       - name: fixmount
         command: [ 'sh', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/data' ]
-        image: {{ .Values.elasticsearch.initContainer.image }}:{{ .Values.elasticsearch.initContainer.imageTag }}
+        image: {{ .Values.global.registry }}/{{ .Values.elasticsearch.initContainer.image }}:{{ .Values.elasticsearch.initContainer.imageTag }}
         volumeMounts:
           - mountPath: /usr/share/elasticsearch/data
             name: data
+            subPath: {{ .Values.elasticsearch.master.persistence.subPath }}
+{{- if .Values.elasticsearch.extraInitContainers }}
+{{ toYaml .Values.elasticsearch.extraInitContainers| indent 6 }}
+{{- end }}
+{{- if .Values.elasticsearch.master.extraInitContainers }}
+{{ toYaml .Values.elasticsearch.master.extraInitContainers| indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
+        securityContext:
+          capabilities:
+            add: ["SYS_CHROOT"]
         env:
         - name: cluster.name
           value: {{ .Values.global.clusterName }}
@@ -91,9 +96,17 @@ spec:
         - name: node.master
           value: "true"
         - name: node.ingest
+        {{- if .Values.elasticsearch.client.dedicatedPod.enabled }}
           value: "false"
+        {{- else }}
+          value: "true"
+        {{- end }}
         - name: node.data
+        {{- if .Values.elasticsearch.data.dedicatedPod.enabled }}
           value: "false"
+        {{- else }}
+          value: "true"
+        {{- end }}
         - name: network.host
           value: "0.0.0.0"
     {{- if .Values.elasticsearch.transportKeyPassphrase.enabled}}
@@ -133,9 +146,13 @@ spec:
         livenessProbe:
 {{ toYaml . | indent 10 }}
     {{- end }}
+    {{- with .Values.elasticsearch.master.startupProbe}}
+        startupProbe:
+{{ toYaml . | indent 10 }}
+    {{- end }}
         # Official Image from Open Distro Team
-        image: {{ .Values.elasticsearch.image }}:{{ .Values.elasticsearch.imageTag }}
-        imagePullPolicy: Always
+        image: {{ .Values.global.registry }}/{{ .Values.elasticsearch.image }}:{{ .Values.elasticsearch.imageTag }}
+        imagePullPolicy: {{ .Values.elasticsearch.imagePullPolicy | default "Always" | quote }}
         ports:
         - containerPort: 9300
           name: transport
@@ -143,9 +160,12 @@ spec:
           name: http
         - containerPort: 9600
           name: metrics
+        - containerPort: 9650
+          name: rca
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+          subPath: {{ .Values.elasticsearch.master.persistence.subPath }}
         {{- if .Values.elasticsearch.config }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elasticsearch.yml
           name: config
@@ -159,76 +179,86 @@ spec:
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/logging.yml
           name: config
           subPath: logging.yml
-        {{- if and .Values.elasticsearch.ssl.transport.enabled .Values.elasticsearch.ssl.transport.existingCertSecret }}
+        {{- if .Values.elasticsearch.ssl.transport.existingCertSecret }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-transport-crt.pem
           name: transport-certs
-          subPath: elk-transport-crt.pem
+          subPath: {{ .Values.elasticsearch.ssl.transport.existingCertSecretCertSubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-transport-key.pem
           name: transport-certs
-          subPath: elk-transport-key.pem
+          subPath: {{ .Values.elasticsearch.ssl.transport.existingCertSecretKeySubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-transport-root-ca.pem
           name: transport-certs
-          subPath: elk-transport-root-ca.pem
-         {{- end }}
-         {{- if and .Values.elasticsearch.ssl.rest.enabled .Values.elasticsearch.ssl.rest.existingCertSecret }}
+          subPath: {{ .Values.elasticsearch.ssl.transport.existingCertSecretRootCASubPath }}
+        {{- end }}
+        {{- if and .Values.elasticsearch.ssl.rest.enabled .Values.elasticsearch.ssl.rest.existingCertSecret }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-rest-crt.pem
           name: rest-certs
-          subPath: elk-rest-crt.pem
+          subPath: {{ .Values.elasticsearch.ssl.rest.existingCertSecretCertSubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-rest-key.pem
           name: rest-certs
-          subPath: elk-rest-key.pem
+          subPath: {{ .Values.elasticsearch.ssl.rest.existingCertSecretKeySubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/elk-rest-root-ca.pem
           name: rest-certs
-          subPath: elk-rest-root-ca.pem
+          subPath: {{ .Values.elasticsearch.ssl.rest.existingCertSecretRootCASubPath }}
         {{- end }}
         {{- if and .Values.elasticsearch.ssl.admin.enabled .Values.elasticsearch.ssl.admin.existingCertSecret }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/admin-crt.pem
           name: admin-certs
-          subPath: admin-crt.pem
+          subPath: {{ .Values.elasticsearch.ssl.admin.existingCertSecretCertSubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/admin-key.pem
           name: admin-certs
-          subPath: admin-key.pem
+          subPath: {{ .Values.elasticsearch.ssl.admin.existingCertSecretKeySubPath }}
         - mountPath: {{ .Values.elasticsearch.configDirectory }}/admin-root-ca.pem
           name: admin-certs
-          subPath: admin-root-ca.pem
-       {{- end }}
-      {{- if .Values.elasticsearch.securityConfig.enabled }}
-      {{- if .Values.elasticsearch.securityConfig.actionGroupsSecret }}
+          subPath: {{ .Values.elasticsearch.ssl.admin.existingCertSecretRootCASubPath }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.enabled }}
+        {{- if .Values.elasticsearch.securityConfig.actionGroupsSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/action_groups.yml
           name: action-groups
           subPath: action_groups.yml
-       {{- end }}
-       {{- if .Values.elasticsearch.securityConfig.configSecret }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.configSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/config.yml
           name: security-config
           subPath: config.yml
-       {{- end }}
-       {{- if .Values.elasticsearch.securityConfig.internalUsersSecret }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.internalUsersSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/internal_users.yml
           name: internal-users-config
           subPath: internal_users.yml
-       {{- end }}
-       {{- if .Values.elasticsearch.securityConfig.rolesSecret }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.rolesSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/roles.yml
           name: roles
           subPath: roles.yml
-       {{- end }}
-       {{- if .Values.elasticsearch.securityConfig.rolesMappingSecret }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.rolesMappingSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/roles_mapping.yml
           name: role-mapping
           subPath: roles_mapping.yml
-      {{- end }}
-       {{- if .Values.elasticsearch.securityConfig.tenantsSecret }}
+        {{- end }}
+        {{- if .Values.elasticsearch.securityConfig.tenantsSecret }}
         - mountPath: {{ .Values.elasticsearch.securityConfig.path }}/tenants.yml
           name: tenants
           subPath: tenants.yml
-      {{- end }}
-      {{- end }}
+        {{- end }}
+        {{- if and .Values.elasticsearch.securityConfig.config.securityConfigSecret .Values.elasticsearch.securityConfig.config.data  }}
+        - mountPath: {{ .Values.elasticsearch.securityConfig.path }}
+          name: security-config
+        {{- end }}
+        {{- end }}
+{{- if .Values.elasticsearch.extraVolumeMounts }}
+{{ toYaml .Values.elasticsearch.extraVolumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.elasticsearch.master.extraContainers }}
+{{ toYaml .Values.elasticsearch.master.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: config
         secret:
           secretName: {{ template "opendistro-es.fullname" . }}-es-config
-      {{- if and .Values.elasticsearch.ssl.transport.enabled .Values.elasticsearch.ssl.transport.existingCertSecret }}
+      {{- if .Values.elasticsearch.ssl.transport.existingCertSecret }}
       - name: transport-certs
         secret:
           secretName: {{ .Values.elasticsearch.ssl.transport.existingCertSecret }}
@@ -242,6 +272,11 @@ spec:
       - name: admin-certs
         secret:
           secretName: {{ .Values.elasticsearch.ssl.admin.existingCertSecret }}
+      {{- end }}
+      {{- if and .Values.elasticsearch.securityConfig.config.securityConfigSecret .Values.elasticsearch.securityConfig.config.data }}
+      - name: security-config
+        secret:
+          secretName: {{ .Values.elasticsearch.securityConfig.config.securityConfigSecret }}
       {{- end }}
       {{- if .Values.elasticsearch.securityConfig.actionGroupsSecret }}
       - name: action-groups
@@ -273,13 +308,41 @@ spec:
         secret:
           secretName: {{ .Values.elasticsearch.securityConfig.tenantsSecret }}
       {{- end }}
+      {{- if not .Values.elasticsearch.master.persistence.enabled }}
+      - name: "data"
+        emptyDir: {}
+      {{- else }}
+      {{- if .Values.elasticsearch.master.persistence.existingClaim }}
+      - name: "data"
+        persistentVolumeClaim:
+          claimName: {{ .Values.elasticsearch.master.persistence.existingClaim }}
+      {{- end }}
+      {{- end }}
+{{- if .Values.elasticsearch.extraVolumes }}
+{{ toYaml .Values.elasticsearch.extraVolumes | indent 6 }}
+{{- end }}
+  {{- if and .Values.elasticsearch.master.persistence.enabled (not .Values.elasticsearch.master.persistence.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: data
+      annotations:
+      {{- range $key, $value := .Values.elasticsearch.master.persistence.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
     spec:
-      accessModes: [ ReadWriteOnce ]
-      storageClassName: {{ .Values.elasticsearch.master.storageClassName }}
+      accessModes:
+      {{- range .Values.elasticsearch.master.persistence.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
       resources:
         requests:
-          storage: {{ .Values.elasticsearch.master.storage }}
+          storage: {{ .Values.elasticsearch.master.persistence.size | quote }}
+    {{- if .Values.elasticsearch.master.persistence.storageClass }}
+    {{- if (eq "-" .Values.elasticsearch.master.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.elasticsearch.master.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}

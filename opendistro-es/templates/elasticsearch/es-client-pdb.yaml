@@ -11,7 +11,8 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-{{- if and .Values.elasticsearch.client.podDisruptionBudget.enabled .Values.elasticsearch.client.enabled }}
+# @formatter:off
+{{- if and .Values.elasticsearch.client.podDisruptionBudget.enabled .Values.elasticsearch.client.enabled .Values.elasticsearch.client.dedicatedPod.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -21,7 +22,7 @@ metadata:
 {{ include "opendistro-es.labels.standard" . | indent 4 }}
 spec:
 {{- if .Values.elasticsearch.client.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.client.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.elasticsearch.client.podDisruptionBudget.minAvailable }}
 {{- end }}
 {{- if .Values.elasticsearch.client.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.elasticsearch.client.podDisruptionBudget.maxUnavailable }}
