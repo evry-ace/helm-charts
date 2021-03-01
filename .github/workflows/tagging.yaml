@@ -21,7 +21,7 @@ jobs:
 
         for chart in */Chart.yaml; do
           chart=$(dirname $chart)
-          version=$(cat ${chart}/Chart.yaml | grep version | awk '{ print $2 }')
+          version=$(cat ${chart}/Chart.yaml | grep "version:" | awk '{ print $2 }')
 
           git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
         done
