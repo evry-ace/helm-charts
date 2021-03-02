@@ -45,7 +45,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           args:
-            - "--listen-address={{ .Values.nodeDns.listenAddress | default '0.0.0.0:8080' }}"
+            - "--listen-address={{ .Values.nodeDns.listenAddress | default "0.0.0.0:8080" }}"
             - "--test-hosts={{ .Values.nodeDns.testHosts }}"
             - "--test-interval-seconds={{ .Values.nodeDns.testInterval | default 120 }}"
       {{- with .Values.nodeSelector }}
