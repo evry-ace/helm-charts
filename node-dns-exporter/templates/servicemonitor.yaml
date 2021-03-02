@@ -1,0 +1,28 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "node-dns-exporter.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ template "node-dns-exporter.name" . }}"
+    chart: {{ template "node-dns-exporter.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- if .Values.metrics.enabled }}
+    prometheus: {{ .Values.metrics.prometheusInstance }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "node-dns-exporter.selectorLabels" . | nindent 6 }}
+  endpoints:
+{{- if .Values.metrics.endpoints }}
+{{ toYaml .Values.metrics.endpoints | indent 4 }}
+{{- else }}
+  - path: {{ .Values.metrics.endpointPath | default "/metrics" }}
+    interval: {{ .Values.metrics.endpointInterval | default "15s" }}
+    targetPort: {{ .Values.metrics.endpointTargetPort | default 8080 }}
+    honorLabels: {{ .Values.metrics.endpointHonorLabels | default true }}
+{{- end }}
+{{- end }}

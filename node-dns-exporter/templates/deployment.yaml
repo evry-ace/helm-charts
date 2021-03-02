@@ -32,18 +32,22 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /metrics
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /metrics
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          args:
+            - "--listen-address={{ .Values.nodeDns.listenAddress | default '0.0.0.0:8080' }}"
+            - "--test-hosts={{ .Values.nodeDns.testHosts }}"
+            - "--test-interval-seconds={{ .Values.nodeDns.testInterval | default 120 }}"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

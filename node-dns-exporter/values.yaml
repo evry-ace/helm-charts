@@ -36,7 +36,9 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
+  name: metrics
+  targetPort: 8080
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -55,3 +57,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# We need to set targetPort (Where metrics are hosted)
+metrics:
+  enabled: true
+  prometheusInstance: kube-prometheus # Select the default prometheus instance.
+
+  # endpoints:
+  # - targetPort: 8080
+  #   path: /metrics
+
+nodeDns:
+  testHosts: "" #"example.com, youtube.com"
+  
+  #listenAddress: 0.0.0.0:8080
+  #testInterval: 120
