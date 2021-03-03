@@ -27,8 +27,8 @@ jobs:
             echo "tag "${chart}-${version}" -m "${chart}-${version}" exists";
           else
             git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
-            git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           fi
+        git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           
         done
 
