@@ -23,7 +23,12 @@ jobs:
           chart=$(dirname $chart)
           version=$(cat ${chart}/Chart.yaml | grep "version:" | awk '{ print $2 }')
 
-          git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
+          if git tag -a "${chart}-${version}" -m "${chart}-${version}" || true; then
+            git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          else
+            echo "tag "${chart}-${version}" -m "${chart}-${version}" exists";
+          fi
+          
         done
 
-        git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        
