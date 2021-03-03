@@ -43,7 +43,7 @@ jobs:
       HELM_VERSION: v3.0.2
       HELM_TMP_DIR: /tmp/helm-tmp-package
       HELM_RELEASE_DIR: release
-      HELM_RELEASE_BRANCH: gh-release
+      HELM_RELEASE_BRANCH: gh-pages
 
     steps:
     - uses: actions/checkout@v2
