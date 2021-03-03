@@ -40,7 +40,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     env:
-      HELM_VERSION: v2.17.0
+      HELM_VERSION: v3.0.2
       HELM_TMP_DIR: /tmp/helm-tmp-package
       HELM_PUB_DIR: release
 
