@@ -49,11 +49,6 @@ jobs:
       with:
         submodules: recursive
       
-    - name: Debug
-      run: |
-        ls -la .
-        ls -la release
-      
     - name: Helm Install
       run: |
         curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
@@ -74,9 +69,15 @@ jobs:
         ref: gh-pages
         path: ./release
         token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Debug
+      run: |
+        ls -la .
+        ls -la ${HELM_PUB_DIR}
+        ls -la ${HELM_TMP_DIR}
+        
     - name: Helm Publish
       run: |
-        ls -la ${HELM_TMP_DIR}
         for chart in ${HELM_TMP_DIR}/*; do
           chart=$(basename $chart)
           echo $chart
