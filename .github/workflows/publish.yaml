@@ -54,9 +54,6 @@ jobs:
           | tar vxz \
             && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
             && rm -vrf linux-amd64
-    - name: Helm Init
-      run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
-
     # Package
     - name: Helm Package
       run: |
