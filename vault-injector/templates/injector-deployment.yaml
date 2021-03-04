@@ -45,7 +45,7 @@ spec:
           image: k8s.gcr.io/leader-elector:0.4
           args:
             - --election=vault-agent-injector-leader
-            - --election-namespace={{ .Release.namespace }}
+            - --election-namespace={{ .Release.Namespace }}
             - --http=0.0.0.0:4040
             - --ttl=60s
           env:
