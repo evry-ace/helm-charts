@@ -1,5 +1,4 @@
 vault:
-  tls_auto_hosts: vault-agent-injector-svc,vault-agent-injector-svc.$(NAMESPACE),vault-agent-injector-svc.$(NAMESPACE).svc
   endpoint: https://vault.vault-system:8200
   image:
     repo: vault
