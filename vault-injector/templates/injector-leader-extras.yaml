@@ -15,3 +15,5 @@ kind: Secret
 metadata:
   name: vault-injector-certs
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
