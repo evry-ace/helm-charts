@@ -2,7 +2,7 @@ vault:
   endpoint: https://vault.vault-system:8200
   image:
     repo: vault
-    tag: v1.6.3
+    tag: "1.6.3"
 
 injector:
   image:
