@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault-injector
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vault-injector-clusterrole
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs:
+    - "get"
+    - "list"
+    - "watch"
+    - "patch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-injector-binding
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vault-injector-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: vault-injector
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vault-injector-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["endpoints", "secrets"]
+  verbs:
+    - "create"
+    - "get"
+    - "watch"
+    - "list"
+    - "update"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vault-injector-rolebinding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: vault-injector-role
+subjects:
+- kind: ServiceAccount
+  name: vault-injector
+  namespace: {{ .Release.Namespace }}

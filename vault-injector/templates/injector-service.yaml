@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-agent-injector-svc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 443
+    targetPort: 8080
+  selector:
+    {{- include "vault-injector.selectorLabels" . | nindent 4 }}
