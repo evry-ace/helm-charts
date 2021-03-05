@@ -72,3 +72,15 @@ nodeDns:
   
   #listenAddress: 0.0.0.0:8080
   #testInterval: 120
+
+alertFor: #3m  
+
+alertRules: []
+#  - alert: something
+#    annotations:
+#      message: |-
+#        {{` something is not working `}}
+#    expr: ''
+#    for: 10m
+#    labels:
+#      severity: warning
