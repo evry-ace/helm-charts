@@ -61,6 +61,7 @@ affinity: {}
 # We need to set targetPort (Where metrics are hosted)
 metrics:
   enabled: true
+  alertmanagerEnabled: true
   prometheusInstance: kube-prometheus # Select the default prometheus instance.
 
   # endpoints:
@@ -75,7 +76,12 @@ nodeDns:
 
 alertFor: #3m  
 
-alertRules: []
+# Sets the alertmanager instance as a label
+# in case the chart is deployed in an environment with
+# multiple alertmanager instances
+alertManager: #default
+
+customAlertRules: []
 #  - alert: something
 #    annotations:
 #      message: |-

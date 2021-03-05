@@ -1,13 +1,15 @@
+{{- if .Values.metrics.alertmanagerEnabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ template "node-dns-exporter.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
+    {{- include "node-dns-exporter.labels" . | nindent 4 }}
     alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:
-  - name: nodeDNS
+  - name: NodeDNS
     rules:
     - alert: NodeDNSerror
       annotations:
@@ -17,6 +19,7 @@ spec:
       for: {{ .Values.alertFor | default "3m" }}
       labels:
         serverity: warning
-{{- if .Values.alertRules }}
-{{ toYaml .Values.alertRules | indent 4 }}
+{{- if .Values.customAlertRules }}
+{{ toYaml .Values.customAlertRules | indent 4 }}
+{{- end }}
 {{- end }}
