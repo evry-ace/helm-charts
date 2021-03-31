@@ -19,6 +19,14 @@ spec:
       for: {{ .Values.alertFor | default "3m" }}
       labels:
         serverity: warning
+    - alert: MissingSearchDomainWarning
+      annotations:
+        message: |-
+          {{`Searchdomain: {{$labels.host}} is not available for node: {{$labels.node}}`}}
+      expr: 'node_dns_searchdomain==0'
+      for: {{ .Values.alertFor | default "3m" }}
+      labels:
+        serverity: warning
 {{- if .Values.customAlertRules }}
 {{ toYaml .Values.customAlertRules | indent 4 }}
 {{- end }}

@@ -70,7 +70,7 @@ metrics:
 
 nodeDns:
   testHosts: "" #"example.com, youtube.com"
-  
+  requiredSearchdomains: "" #"localhost, mysearchdomain.com"
   #listenAddress: 0.0.0.0:8080
   #testInterval: 120
 
