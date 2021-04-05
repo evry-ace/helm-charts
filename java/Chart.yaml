@@ -1,4 +1,8 @@
-apiVersion: v1
+apiVersion: v2
 description: Java Helm Chart
 name: java
-version: 5.2.0
+version: 6.0.0
+dependencies:
+  - name: libchart
+    version: 0.1.0
+    repository: file://../libchart

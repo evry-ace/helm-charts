@@ -2,10 +2,9 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ template "golang.name" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "libchart.name" . }}
   labels:
-    {{- include "golang.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
 spec:
   hosts:
   {{- range .Values.istio.ingress.hosts }}
@@ -17,7 +16,7 @@ spec:
     - "{{ . }}"
   {{- end }}
 {{- else }}
-    - "{{ template "golang.name" . }}-gateway"
+    - "{{ template "libchart.name" . }}-gateway"
 {{- end }}
   http:
   - match:
@@ -27,6 +26,6 @@ spec:
     - destination:
         port:
           number: {{ .Values.service.port }} # can be omitted if its the only port for reviews
-        host: "{{ template "golang.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+        host: "{{ template "libchart.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
       weight: 100
 {{- end }}

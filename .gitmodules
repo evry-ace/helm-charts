@@ -2,5 +2,5 @@
 	path = kiali-operator
 	url = https://github.com/evry-ace/helm-kiali-operator.git
 [submodule "istio-bookinfo"]
-	path = istio-bookinfo
-	url = https://github.com/evry-ace/helm-istio-bookinfo.git
+  path = istio-bookinfo
+  url = https://github.com/evry-ace/helm-istio-bookinfo.git
