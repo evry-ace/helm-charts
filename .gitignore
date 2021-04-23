@@ -3,3 +3,5 @@ repository/
 
 data
 temp
+charts/
+Chart.lock

@@ -1,6 +1,5 @@
-{{- $name := include "web.name" . }}
-{{- $labels := include "web.metaLabels" . }}
-{{- $namespace := .Release.Namespace}}
+{{- $name := include "libchart.name" . }}
+{{- $labels := include "libchart.labels" . }}
 
 {{- if .Values.egress }}
 {{ range $entry := .Values.egress.https }}
@@ -9,7 +8,6 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $entry.name }}-https"
-  namespace: {{ $namespace }}
   labels:
     {{- toYaml $labels | nindent 4 }}
 spec:

@@ -1,0 +1,3 @@
+{{- if .Values.autoscaling.enabled }}
+{{- include "libchart.hpa.tpl" . }}
+{{- end }}

@@ -6,11 +6,10 @@ metadata:
 {{- if .Values.istio.gatewayName }}
   name: {{ .Values.istio.gatewayName }}
 {{- else }}
-  name: {{ template "nodejs.name" . }}-gateway
+  name: {{ template "libchart.name" . }}-gateway
 {{- end }}
-  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "nodejs.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
 spec:
   selector:
     istio: {{ .Values.istio.ingressGateway | default "ingressgateway" }} # use Istio default gateway implementation
@@ -41,7 +40,7 @@ spec:
 {{- if .Values.istio.ingress.tls.secretName }}
       credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
 {{- else }}
-      credentialName: "{{ template "nodejs.name" . }}"
+      credentialName: "{{ template "libchart.name" . }}"
 {{- end }}
 {{- end }}
 

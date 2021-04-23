@@ -2,17 +2,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "java.name" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "libchart.name" . }}
   labels:
-    {{- include "java.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
 {{- if .Values.metrics.enabled }}
     prometheus: {{ .Values.metrics.prometheusInstance }}
 {{- end }}
 spec:
   selector:
     matchLabels:
-      {{- include "java.selectorLabels" . | nindent 6 }}
+      {{- include "libchart.selectorLabels" . | nindent 6 }}
   endpoints:
 {{- if .Values.metrics.endpoints }}
 {{ toYaml .Values.metrics.endpoints | indent 4 }}

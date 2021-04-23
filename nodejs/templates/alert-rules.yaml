@@ -2,12 +2,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ template "nodejs.name" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "libchart.name" . }}
   labels:
-    {{- include "nodejs.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
     alertmanager: {{ .Values.alertManager | default "default" }}
 spec:
   groups:
-{{ toYaml .Values.alertRules | indent 4 }}
+    {{ toYaml .Values.alertRules | nindent 4 }}
 {{- end }}

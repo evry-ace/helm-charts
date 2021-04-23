@@ -1,11 +1,10 @@
-# Default values for dotnet.
+# Default values for chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 name: ""
-appEnv: production
 appVersion: v1
 
 image:
@@ -15,14 +14,29 @@ image:
   #   - secret1
   #   - secret2
 
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
 podAnnotations: {}
 podLabels: {}
-podDisruptionBudget: {}
-  # maxUnavailable: 1
-  # minAvailable: 2
 
 securityContext:
   runAsNonRoot: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsUser: 1000
+  # fsGroup: 2000
 
 environment: {}
 secrets: {}
@@ -48,54 +62,6 @@ csi: {}
 #      objectType: key
 #      objectVersion: ""
 
-liveness:
-  port: 8080
-  enabled: true
-  delay: 15
-  timeout: 15
-  periodSeconds: 15
-readiness:
-  port: 8080
-  enabled: true
-  delay: 15
-  timeout: 15
-  periodSeconds: 15
-
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8080
-  name: http
-  extraPorts: []
-
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  path: /
-  hosts:
-    - chart-example.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-istio:
-  enabled: false
-  ingress:
-    enabled: false
-    # gatewayName: appname-gw
-    gateways: []
-    hosts:
-      - chart-example.local
-    tls:
-      enabled: true
-      httpsRedirect: false
-      # secretName: chart-example-tls
-
-extraPorts: []
-
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -112,6 +78,10 @@ nodeSelector: {}
 
 tolerations: []
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
@@ -123,7 +93,68 @@ podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 ## If you still need anti-affinity, you must include the configuration here.
 affinity: {}
 
-# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+extraContainerPorts: []
+
+liveness:
+  port: 8080
+  enabled: true
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
+readiness:
+  port: 8080
+  enabled: true
+  delay: 15
+  timeout: 15
+  periodSeconds: 15
+
+# Service
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  name: http
+  extraPorts: []
+
+# Ingress
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+traefikV2:
+  enabled: false
+  annotations: {}
+  middlewares: []
+  ingressRoutes: []
+
+istio:
+  enabled: false
+  ingress:
+    enabled: false
+    gateways: []
+    hosts:
+      - chart-example.local
+    tls:
+      enabled: true
+      httpsRedirect: false
+      # secretName: chart-example-tls
+
 metrics:
   enabled: true
   prometheusInstance: default # Select the default prometheus instance.
@@ -143,7 +174,7 @@ cert:
   hosts: []
   issuer: letsencrypt-prod
   issuerKind: ClusterIssuer
-  # secretName: dotnet-appname-tls
+  # secretName: java-appname-tls
   # duration: 2160h # 90d (Maximum 90d)
   renewBefore: 360h0m0s # 15d
 
@@ -160,4 +191,7 @@ volumes: []
 #      - key: ssh-pub-key
 #        path: id_rsa.pub
 
-certmanagerApiVersion: cert-manager.io/v1alpha2
+deployKind: deployment
+
+autoscaling:
+  enabled: false

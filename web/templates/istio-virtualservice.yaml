@@ -1,9 +1,8 @@
 
 {{- if .Values.istio.virtualservice }}
-{{- $name := include "web.name" . }}
-{{- $labels := include "web.metaLabels" . }}
-{{- $chart := include "web.chart" . }}
-{{- $namespace := .Release.Namespace}}
+{{- $name := include "libchart.name" . }}
+{{- $labels := include "libchart.labels" . }}
+{{- $chart := include "libchart.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
@@ -13,7 +12,6 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: "{{ $name }}-{{ $virtualservice.name }}"
-  namespace: {{ $namespace }}
   labels:
     {{- toYaml $labels | nindent 4 }}
 spec:

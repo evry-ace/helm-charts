@@ -4,9 +4,12 @@ set -u
 set -e
 set -o pipefail
 
+rm -rf data temp
+
 for chart in */Chart.yaml; do
   chart=$(dirname $chart)
 
+  helm dep update $chart
   helm lint $chart
   [ ! -z "$(echo $chart | egrep '(dotnet|golang|java|nodejs|web)')" ] && {
     [ -d data ] && rm -rf data
