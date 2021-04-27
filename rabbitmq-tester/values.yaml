@@ -61,7 +61,7 @@ metrics:
 alert:
   alertmanagerEnabled: true
   #alerttime
-  for: 1m
+  for: 3m
   
   # Sets the alertmanager instance as a label
   # in case the chart is deployed in an environment with
@@ -79,8 +79,8 @@ alert:
   #      severity: warning
 
 rabbitmqTester:
+  testInterval: 120
   #rabbitmqAddress: "amqp://guest:guest@localhost:5672/"
-  #testInterval: 120
   #exchangeName: rabbitmq-test-exchange 
-  #listenAdress: "0.0.0.0:8080"
+  #listenAdress: 0.0.0.0:8080
   #nodeName: ""
