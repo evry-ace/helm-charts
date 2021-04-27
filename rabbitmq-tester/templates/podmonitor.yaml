@@ -18,9 +18,7 @@ spec:
   podMetricsEndpoints:
     - port: http
       path: /metrics
-      {{- if .Values.metrics.interval }}
-      interval: {{ .Values.metrics.interval }}
-      {{- end }}
+      interval: {{ .Values.metrics.interval | default "15s"}}
 {{- end }}
 
 ---
@@ -45,7 +43,5 @@ spec:
   podMetricsEndpoints:
     - port: http
       path: /metrics
-      {{- if .Values.metrics.interval }}
-      interval: {{ .Values.metrics.interval }}
-      {{- end }}
+      interval: {{ .Values.metrics.interval | default "15s"}}
 {{- end }}

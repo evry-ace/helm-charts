@@ -49,10 +49,10 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           args:
             - "--listen-address={{ .Values.rabbitmqTester.listenAddress | default "0.0.0.0:8080" }}"
-            - "--rabbitmq-address={{ .Values.rabbitmqTester.rabbitmqAddress | default "amqp://guest:guest@localhost:5672/"}}" 
+            - "--rabbitmq-address={{ .Values.rabbitmqTester.rabbitmqAddress | default "amqp://guest:guest@localhost:5672/"}}"
             - "--exchange-name={{ .Values.rabbitmqTester.exchangeName | default "rabbitmq-test-exchange" }}"
             - "--is-producer=true"
-            - "--test-interval-seconds={{ .Values.rabbitmqTester.testInterval | default 120 }}"
+            - "--test-interval-seconds={{ .Values.rabbitmqTester.testInterval | default "120" }}"
             - "--node-name={{ .Values.rabbitmqTester.nodeName | default "$(NODE_NAME)" }}"
           env:
             - name: NODE_NAME

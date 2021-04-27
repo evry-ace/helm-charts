@@ -74,7 +74,7 @@ nodeDns:
   #listenAddress: 0.0.0.0:8080
   #testInterval: 120
 
-alertFor: #3m  
+alertFor: #3m
 
 # Sets the alertmanager instance as a label
 # in case the chart is deployed in an environment with

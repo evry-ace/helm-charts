@@ -56,17 +56,17 @@ metrics:
   enabled: true
   prometheusInstance: kube-prometheus # Select the default prometheus instance.
   # Scrape interval. If not set, the Prometheus default scrape interval is used.
-  interval: #15s
+  # interval: 15s
 
 alert:
   alertmanagerEnabled: true
-  #alerttime
+  # alerttime
   for: 3m
-  
+
   # Sets the alertmanager instance as a label
   # in case the chart is deployed in an environment with
   # multiple alertmanager instances
-  alertManager: #default
+  alertManager: # default
 
   customAlertRules: []
   #  - alert: something
@@ -80,7 +80,7 @@ alert:
 
 rabbitmqTester:
   testInterval: 120
-  #rabbitmqAddress: "amqp://guest:guest@localhost:5672/"
-  #exchangeName: rabbitmq-test-exchange 
-  #listenAdress: 0.0.0.0:8080
-  #nodeName: ""
+  # rabbitmqAddress: amqp://guest:guest@localhost:5672/
+  # exchangeName: rabbitmq-test-exchange
+  # listenAdress: 0.0.0.0:8080
+  # nodeName: ""
