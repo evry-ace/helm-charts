@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "rabbitmq-tester.fullname" . }}-consumer
+  labels:
+    {{- include "rabbitmq-tester.labels" . | nindent 4 }}
+    app.kubernetes.io/component: consumer
+spec:
+  selector:
+    matchLabels:
+      {{- include "rabbitmq-tester.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: consumer
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rabbitmq-tester.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: consumer
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rabbitmq-tester.serviceAccountName" . }}-consumer
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          args:
+            - "--listen-address={{ .Values.rabbitmqTester.listenAddress | default "0.0.0.0:8080" }}"
+            - "--rabbitmq-address={{ .Values.rabbitmqTester.rabbitmqAddress | default "amqp://guest:guest@localhost:5672/"}}" 
+            - "--exchange-name={{ .Values.rabbitmqTester.exchangeName | default "rabbitmq-test-exchange" }}"
+            - "--is-producer=false"
+            - "--test-interval-seconds={{ .Values.rabbitmqTester.testInterval | default 120 }}"
+            - "--node-name={{ .Values.rabbitmqTester.nodeName | default "$(NODE_NAME)" }}"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,51 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ template "rabbitmq-tester.fullname" . }}-consumer
+  labels:
+    {{- include "rabbitmq-tester.labels" . | nindent 4 }}
+    app.kubernetes.io/component: consumer
+spec:
+  jobLabel: {{ template "rabbitmq-tester.fullname" . }}-consumer
+  selector:
+    matchLabels:
+      {{- include "rabbitmq-tester.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: consumer
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  podMetricsEndpoints:
+    - port: http
+      path: /metrics
+      {{- if .Values.metrics.interval }}
+      interval: {{ .Values.metrics.interval }}
+      {{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ template "rabbitmq-tester.fullname" . }}-producer
+  labels:
+    {{- include "rabbitmq-tester.labels" . | nindent 4 }}
+    app.kubernetes.io/component: producer
+spec:
+  jobLabel: {{ template "rabbitmq-tester.fullname" . }}-producer
+  selector:
+    matchLabels:
+      {{- include "rabbitmq-tester.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: producer
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  podMetricsEndpoints:
+    - port: http
+      path: /metrics
+      {{- if .Values.metrics.interval }}
+      interval: {{ .Values.metrics.interval }}
+      {{- end }}
+{{- end }}

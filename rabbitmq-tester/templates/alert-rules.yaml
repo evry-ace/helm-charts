@@ -1,0 +1,33 @@
+{{- if .Values.alert.alertmanagerEnabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "rabbitmq-tester.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rabbitmq-tester.labels" . | nindent 4 }}
+    alertmanager: {{ .Values.alert.alertManager | default "default" }}
+spec:
+  groups:
+  - name: Rabbitmq-tester
+    rules:
+    - alert: FailedToConnectProducer
+      annotations:
+        message: |-
+          {{`Producer: {{$labels.pod}}({{$labels.node}}) failed to connect to Rabbitmq`}}
+      expr: 'sum(rabbitmq_test_produce_consume{status="failed",kind="producer"}>0) BY (pod,node,namespace,job,status)'
+      for: {{ .Values.alert.for | default "3m" }}
+      labels:
+        serverity: error
+    - alert: FailedToConnectConsumer
+      annotations:
+        message: |-
+          {{`Consumer: {{$labels.pod}}({{$labels.node}}) failed to connect to Rabbitmq`}}
+      expr: 'sum(rabbitmq_test_produce_consume{status="failed",kind="consumer"}>0) BY (pod,node,namespace,job,status)'
+      for: {{ .Values.alert.for | default "3m" }}
+      labels:
+        serverity: error
+{{- if .Values.customAlertRules }}
+{{ toYaml .Values.customAlertRules | indent 4 }}
+{{- end }}
+{{- end }}
