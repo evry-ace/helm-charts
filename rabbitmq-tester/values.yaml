@@ -1,16 +1,16 @@
-# Default values for node-dns-exporter.
+# Default values for rabbitmq-tester.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 image:
-  repository: ghcr.io/evry-ace/node-dns-exporter
+  repository: ghcr.io/evry-ace/rabbitmq-tester
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 imagePullSecrets: []
-nameOverride: ""
 fullnameOverride: ""
+nameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -19,7 +19,6 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
 podAnnotations: {}
 
@@ -33,12 +32,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 8080
-  name: metrics
-  targetPort: 8080
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -61,32 +54,33 @@ affinity: {}
 # We need to set targetPort (Where metrics are hosted)
 metrics:
   enabled: true
-  alertmanagerEnabled: true
   prometheusInstance: kube-prometheus # Select the default prometheus instance.
+  # Scrape interval. If not set, the Prometheus default scrape interval is used.
+  # interval: 15s
 
-  # endpoints:
-  # - targetPort: 8080
-  #   path: /metrics
+alert:
+  alertmanagerEnabled: true
+  # alerttime
+  for: 3m
 
-nodeDns:
-  testHosts: "" #"example.com, youtube.com"
-  requiredSearchdomains: "" #"localhost, mysearchdomain.com"
-  #listenAddress: 0.0.0.0:8080
-  #testInterval: 120
+  # Sets the alertmanager instance as a label
+  # in case the chart is deployed in an environment with
+  # multiple alertmanager instances
+  alertManager: # default
 
-alertFor: #3m
+  customAlertRules: []
+  #  - alert: something
+  #    annotations:
+  #      message: |-
+  #        {{` something is not working `}}
+  #    expr: ''
+  #    for: 10m
+  #    labels:
+  #      severity: warning
 
-# Sets the alertmanager instance as a label
-# in case the chart is deployed in an environment with
-# multiple alertmanager instances
-alertManager: #default
-
-customAlertRules: []
-#  - alert: something
-#    annotations:
-#      message: |-
-#        {{` something is not working `}}
-#    expr: ''
-#    for: 10m
-#    labels:
-#      severity: warning
+rabbitmqTester:
+  testInterval: 120
+  # rabbitmqAddress: amqp://guest:guest@localhost:5672/
+  # exchangeName: rabbitmq-test-exchange
+  # listenAdress: 0.0.0.0:8080
+  # nodeName: ""
