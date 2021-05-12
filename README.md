@@ -8,7 +8,7 @@ Official Helm Charts for the ACE Platform
 * [Nodej.js](./nodejs)
 * [Web apps](./web)
 
-## Debelopment
+## Development
 
 Read Helm's official [Charts Development Guide][helm-development].
 
