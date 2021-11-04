@@ -14,11 +14,11 @@ spec:
     - alert: NodeDNSerror
       annotations:
         message: |-
-          {{`{{$labels.host}} is unreachable by {{$labels.pod}}({{$labels.node}}) in namespace: {{ $labels.namespace }}`}}
+          {{`{{$labels.host}} is unresolvable by {{$labels.pod}}({{$labels.node}}) in namespace: {{ $labels.namespace }}`}}
       expr: 'sum(node_dns_test_result{status="failed"}>0) BY (host,namespace,pod,node)'
       for: {{ .Values.alertFor | default "3m" }}
       labels:
-        serverity: warning
+        severity: warning
     - alert: MissingSearchDomainWarning
       annotations:
         message: |-
@@ -26,7 +26,7 @@ spec:
       expr: 'node_dns_searchdomain==0'
       for: {{ .Values.alertFor | default "3m" }}
       labels:
-        serverity: warning
+        severity: warning
 {{- if .Values.customAlertRules }}
 {{ toYaml .Values.customAlertRules | indent 4 }}
 {{- end }}
