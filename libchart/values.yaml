@@ -123,6 +123,7 @@ service:
   targetPort: 8080
   name: http
   extraPorts: []
+  annotations: {}
 
 # Ingress
 ingress:
