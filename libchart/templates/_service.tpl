@@ -5,7 +5,7 @@ metadata:
   name: {{ template "libchart.name" . }}
   labels:
     {{- include "libchart.labels" . | nindent 4 }}
-{{ {{- with .Values.service.annotations }}
+{{- with .Values.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 }}
 {{- end -}}}}
