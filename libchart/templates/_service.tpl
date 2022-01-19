@@ -5,10 +5,10 @@ metadata:
   name: {{ template "libchart.name" . }}
   labels:
     {{- include "libchart.labels" . | nindent 4 }}
-{{- with .Values.service.annotations }}
+{{- if .Values.service.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
-{{- end -}}}}
+  {{ toYaml .Values.service.annotations | nindent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
