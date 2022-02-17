@@ -96,6 +96,7 @@ affinity:
 {{- end }}
 
 {{- with .Values.dnsConfig }}
+dnsConfig:
   {{ toYaml . | nindent 2 }}
 {{- end -}}
 
