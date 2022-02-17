@@ -95,6 +95,11 @@ affinity:
 {{- end }}
 {{- end }}
 
+{{- with .Values.dnsConfig }}
+dnsConfig:
+  {{ toYaml . | nindent 2 }}
+{{- end -}}
+
 {{- with .Values.tolerations }}
 tolerations:
   {{ toYaml . | nindent 2 }}
