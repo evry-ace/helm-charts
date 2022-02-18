@@ -1,14 +1,3 @@
 {{- if .Values.podDisruptionBudget -}}
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: {{ template "golang.name" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    {{- include "golang.metaLabels" . | nindent 4 }}
-spec:
-  selector:
-    matchLabels:
-      {{- include "golang.selectorLabels" . | nindent 6 }}
-{{ toYaml .Values.podDisruptionBudget | indent 2 }}
-{{- end -}}
+{{- include "libchart.pdb.tpl" . -}}
+{{- end }}

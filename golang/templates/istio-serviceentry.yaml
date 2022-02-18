@@ -1,9 +1,8 @@
 
 {{- if .Values.istio.serviceentry }}
-{{- $name := include "golang.name" . }}
-{{- $labels := include "golang.metaLabels" . }}
-{{- $chart := include "golang.chart" . }}
-{{- $namespace := .Release.Namespace}}
+{{- $name := include "libchart.name" . }}
+{{- $labels := include "libchart.labels" . }}
+{{- $chart := include "libchart.chart" . }}
 {{- $release := .Release }}
 {{- $values := .Values }}
 
@@ -13,7 +12,6 @@ apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
   name: "{{ $name }}-{{ $serviceentry.name }}"
-  namespace: {{ $namespace }}
   labels:
     {{- toYaml $labels | nindent 4 }}
 spec:

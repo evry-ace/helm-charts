@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
+        fetch-depth: 0
 
     - name: git tag
       run: |
@@ -21,9 +22,15 @@ jobs:
 
         for chart in */Chart.yaml; do
           chart=$(dirname $chart)
-          version=$(cat ${chart}/Chart.yaml | grep version | awk '{ print $2 }')
+          version=$(cat ${chart}/Chart.yaml | grep "version:" | awk '{ print $2 }')
 
-          git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
+          if [ $(git tag -l "${chart}-${version}") ]; then
+            echo "tag "${chart}-${version}" -m "${chart}-${version}" exists";
+          else
+            git tag -a "${chart}-${version}" -m "${chart}-${version}" || true
+          fi
+        git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          
         done
 
-        git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        

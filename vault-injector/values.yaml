@@ -1,0 +1,30 @@
+vault:
+  endpoint: https://vault.vault-system:8200
+  image:
+    repo: vault
+    tag: "1.6.3"
+
+injector:
+  image:
+    repo: hashicorp/vault-k8s
+    tag: "0.8.0"
+  agent_log_level: info
+  agent_log_format: "standard"
+  replicas: 2
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+podAntiAffinity: hard
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+namespaceSelector:
+  matchLabels: {}
+  matchExpressions: []
+
+podsFailurePolicy: Fail

@@ -3,11 +3,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: {{ .Release.Name}}-mtls
-  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "dotnet.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
 spec:
-  host: {{ template "dotnet.name" . }}
+  host: {{ template "libchart.name" . }}
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL

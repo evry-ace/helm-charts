@@ -3,12 +3,16 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{ template "java.name" . }}-gateway
+{{- if .Values.istio.gatewayName }}
+  name: {{ .Values.istio.gatewayName }}
+{{- else }}
+  name: {{ template "libchart.name" . }}-gateway
+{{- end }}
   labels:
-    {{- include "java.metaLabels" . | nindent 4 }}
+    {{- include "libchart.labels" . | nindent 4 }}
 spec:
   selector:
-    istio: ingressgateway # use Istio default gateway implementation
+    istio: {{ .Values.istio.ingressGateway | default "ingressgateway" }} # use Istio default gateway implementation
   servers:
   - port:
       number: 80
@@ -36,7 +40,7 @@ spec:
 {{- if .Values.istio.ingress.tls.secretName }}
       credentialName: "{{ .Values.istio.ingress.tls.secretName  }}"
 {{- else }}
-      credentialName: "{{ template "java.name" . }}"
+      credentialName: "{{ template "libchart.name" . }}"
 {{- end }}
 {{- end }}
 

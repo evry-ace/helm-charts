@@ -1,0 +1,139 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-injector
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-injector.metaLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.injector.replicas }}
+  selector:
+    matchLabels:
+      {{- include "vault-injector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+      {{- include "vault-injector.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: "vault-injector"
+    {{- if or .Values.affinity .Values.podAntiAffinity }}
+      affinity:
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
+              labelSelector:
+                matchLabels:
+                  {{- include "vault-injector.selectorLabels" . | nindent 18 }}
+      {{- else if eq .Values.podAntiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
+                labelSelector:
+                  matchLabels:
+                    {{- include "vault-injector.selectorLabels" . | nindent 20 }}
+      {{- end }}
+    {{- end }}
+      containers:
+        - name: leader-elector
+          image: k8s.gcr.io/leader-elector:0.4
+          args:
+            - --election=vault-agent-injector-leader
+            - --election-namespace={{ .Release.Namespace }}
+            - --http=0.0.0.0:4040
+            - --ttl=60s
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4040
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 1
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4040
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 50m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+        - name: sidecar-injector
+          image: "{{ .Values.injector.image.repo }}:{{ .Values.injector.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AGENT_INJECT_LISTEN
+              value: ":8080"
+            - name: AGENT_INJECT_LOG_LEVEL
+              value: "{{ .Values.injector.agent_log_level }}"
+            - name: AGENT_INJECT_LOG_FORMAT
+              value: "{{ .Values.injector.agent_log_format }}"
+            - name: AGENT_INJECT_VAULT_ADDR
+              value: "{{ .Values.vault.endpoint }}"
+            - name: AGENT_INJECT_VAULT_IMAGE
+              value: "{{ .Values.vault.image.repo }}:{{ .Values.vault.image.tag }}"
+            - name: AGENT_INJECT_TLS_AUTO
+              value: vault-agent-injector-cfg
+            - name: AGENT_INJECT_TLS_AUTO_HOSTS
+              value: "vault-agent-injector-svc,vault-agent-injector-svc.{{ .Release.Namespace }},vault-agent-injector-svc.{{ .Release.Namespace }}.svc"
+            - name: AGENT_INJECT_USE_LEADER_ELECTOR
+              value: "true"
+          args:
+            - agent-inject
+            - 2>&1
+          resources:
+            {{ toYaml .Values.injector.resources | nindent 12 }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          livenessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTPS
+            failureThreshold: 2
+            initialDelaySeconds: 1
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTPS
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5

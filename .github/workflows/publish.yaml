@@ -13,25 +13,25 @@ jobs:
       CONFTEST_VERSION: "0.15.0"
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: recursive
-    - name: Conftest Install
-      run: |
-        curl -sSL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz \
-          | tar vxz \
-            && sudo mv -v conftest /usr/local/bin/conftest
-    - name: Install YQ
-      run: |
-        curl -sSL https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64 -o yq && chmod +x yq && sudo mv yq /usr/local/bin
-    - name: Helm Install
-      run: |
-        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
-          | tar vxz \
-            && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
-            && rm -vrf linux-amd64
-    - name: Helm Lint
-      run: ./helm-test.sh
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Conftest Install
+        run: |
+          curl -sSL https://github.com/instrumenta/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz \
+            | tar vxz \
+              && sudo mv -v conftest /usr/local/bin/conftest
+      - name: Install YQ
+        run: |
+          curl -sSL https://github.com/mikefarah/yq/releases/download/v4.20.1/yq_linux_amd64 -o yq && chmod +x yq && sudo mv yq /usr/local/bin
+      - name: Helm Install
+        run: |
+          curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+            | tar vxz \
+              && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
+              && rm -vrf linux-amd64
+      - name: Helm Lint
+        run: ./helm-test.sh
 
   publish:
     runs-on: ubuntu-latest
@@ -40,64 +40,79 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     env:
-      HELM_VERSION: v2.17.0
+      HELM_VERSION: v3.0.2
       HELM_TMP_DIR: /tmp/helm-tmp-package
-      HELM_PUB_DIR: release
+      HELM_RELEASE_DIR: release
+      HELM_RELEASE_BRANCH: gh-pages
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: recursive
-    - name: Helm Install
-      run: |
-        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
-          | tar vxz \
-            && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
-            && rm -vrf linux-amd64
-    - name: Helm Init
-      run: helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-    # Package
-    - name: Helm Package
-      run: |
-        mkdir -p ${HELM_TMP_DIR}
-        ./helm-package.sh ${HELM_TMP_DIR}
-        ls -la ${HELM_TMP_DIR}
+      - name: Helm Install
+        run: |
+          curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+            | tar vxz \
+              && sudo mv -v linux-amd64/helm /usr/local/bin/helm \
+              && rm -vrf linux-amd64
 
-    # Publish
-    - uses: actions/checkout@v1
-      with:
-        ref: gh-pages
-        path: ./release
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Helm Publish
-      run: |
-        ls -la ${HELM_TMP_DIR}
-        for chart in ${HELM_TMP_DIR}/*; do
-          chart=$(basename $chart)
-          echo $chart
+      # Package
+      - name: Helm Package
+        run: |
+          mkdir -p ${HELM_TMP_DIR}
+          ./helm-package.sh ${HELM_TMP_DIR}
+          ls -la ${HELM_TMP_DIR}
 
-          if [ ! -f "${HELM_PUB_DIR}/${chart}" ]; then
-            mv -vn "${HELM_TMP_DIR}/${chart}" "${HELM_PUB_DIR}/${chart}"
-          else
-            echo "Chart $chart is already released!"
-          fi
+      # Publish
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-          helm repo index .
-        done
+      - name: Debug
+        run: |
+          ls -la .
+          ls -la ${HELM_RELEASE_BRANCH}
+          ls -la ${HELM_RELEASE_BRANCH}/${HELM_RELEASE_DIR}
+          ls -la ${HELM_TMP_DIR}
 
-    - name: Git Push
-      run: |
-        git add -v ${HELM_PUB_DIR}
-        git status
-        if ! $(git diff-index --quiet HEAD -- ${HELM_PUB_DIR}/*); then
-          git add -v index.yaml
+      - name: Helm Publish
+        run: |
+          cd ${HELM_RELEASE_BRANCH}
+
+          for chart in ${HELM_TMP_DIR}/*; do
+            chart=$(basename $chart)
+            echo $chart
+
+            if [ ! -f "${HELM_RELEASE_DIR}/${chart}" ]; then
+              mv -vn "${HELM_TMP_DIR}/${chart}" "${HELM_RELEASE_DIR}/${chart}"
+            else
+              echo "Chart $chart is already released!"
+            fi
+          done
+
+          # Generate new index.yaml
+          helm repo index ${HELM_RELEASE_DIR} --url ${HELM_RELEASE_DIR}
+
+          # Move generated index.yaml to root dir
+          mv ${HELM_RELEASE_DIR}/index.yaml .
+
+      - name: Git Push
+        run: |
+          cd ${HELM_RELEASE_BRANCH}
+
+          git add -v ${HELM_RELEASE_DIR}
           git status
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git config --global user.name "${GITHUB_ACTOR}"
-          git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
+          if ! $(git diff-index --quiet HEAD -- ${HELM_RELEASE_DIR}/*); then
+            git add -v index.yaml
+            git status
+            git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+            git config --global user.name "${GITHUB_ACTOR}"
+            git commit -am "AUTO-RELEASE: publish Helm Charts from master@${GITHUB_SHA:0:7}"
 
-          git push "https://${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
-        else
-          echo "No new packages to push"
-        fi
+            git push "https://${{ secrets.GITHUB_PAT }}@github.com/${GITHUB_REPOSITORY}.git"
+          else
+            echo "No new packages to push"
+          fi

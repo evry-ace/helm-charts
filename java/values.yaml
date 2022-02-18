@@ -1,11 +1,10 @@
-# Default values for java.
+# Default values for libchart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 name: ""
-# javaOptions:
 appVersion: v1
 
 image:
@@ -15,16 +14,30 @@ image:
   #   - secret1
   #   - secret2
 
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
 podAnnotations: {}
 podLabels: {}
-podDisruptionBudget: {}
-  # maxUnavailable: 1
-  # minAvailable: 2
-  
-serviceAccountName: default
+
 securityContext:
   runAsNonRoot: true
-  
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsUser: 1000
+  # fsGroup: 2000
+
 environment: {}
 secrets: {}
 
@@ -49,6 +62,46 @@ csi: {}
 #      objectType: key
 #      objectVersion: ""
 
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
+## Pod affinity
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+## Custom Affinity settings
+## Defining 'affinity' will disable any podAntiAffinity settings.
+## If you still need anti-affinity, you must include the configuration here.
+affinity: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+extraContainerPorts: []
+
 liveness:
   port: 8080
   enabled: true
@@ -62,13 +115,16 @@ readiness:
   timeout: 15
   periodSeconds: 15
 
+# Service
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
   name: http
   extraPorts: []
+  annotations: {}
 
+# Ingress
 ingress:
   enabled: false
   annotations: {}
@@ -81,7 +137,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-  
+
 traefikV2:
   enabled: false
   annotations: {}
@@ -100,36 +156,6 @@ istio:
       httpsRedirect: false
       # secretName: chart-example-tls
 
-extraPorts: []
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-## Pod affinity
-## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
-podAntiAffinity: soft
-podAntiAffinityTopologyKey: "kubernetes.io/hostname"
-
-## Custom Affinity settings
-## Defining 'affinity' will disable any podAntiAffinity settings.
-## If you still need anti-affinity, you must include the configuration here.
-affinity: {}
-
-# We need to set targetPort (Where metrics are hosted) so that it can be collected on the outside of the SMESH
 metrics:
   enabled: true
   prometheusInstance: default # Select the default prometheus instance.
@@ -166,6 +192,10 @@ volumes: []
 #      - key: ssh-pub-key
 #        path: id_rsa.pub
 
-certmanagerApiVersion: cert-manager.io/v1alpha2
-
 deployKind: deployment
+
+autoscaling:
+  enabled: false
+
+# https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsConfig: {}
