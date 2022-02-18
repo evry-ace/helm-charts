@@ -15,7 +15,7 @@
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 - [ ] I have made design choices.
-- [ ] My design choices are documented in an Architecture Decision Record in the adr/ folder of this repo.
+- [ ] My design choices are documented in an Architecture Decision Record in the designated ARD folder of this repo.
 
 ## Issues this PR fixes
 <!-- 
