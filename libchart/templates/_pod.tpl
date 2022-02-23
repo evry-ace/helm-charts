@@ -65,7 +65,7 @@ containers:
       {{- end }}
     resources:
       {{ toYaml .Values.resources | nindent 6 }}
-    securityContext: &securityContext
+    securityContext:
       {{- toYaml .Values.securityContext | nindent 6 }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
