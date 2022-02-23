@@ -30,14 +30,17 @@ serviceAccount:
 podAnnotations: {}
 podLabels: {}
 
-securityContext:
+podSecurityContext:
   runAsNonRoot: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsUser: 1000
-  # fsGroup: 2000
+  runAsUser: 65534
+  fsGroup: 65534
+
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
 
 environment: {}
 secrets: {}
