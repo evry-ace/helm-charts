@@ -10,7 +10,7 @@ jobs:
       CONFTEST_VERSION: "0.15.0"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Conftest Install
