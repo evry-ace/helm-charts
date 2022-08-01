@@ -21,6 +21,9 @@ spec:
       {{- end }}
       labels:
         {{- include "libchart.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- include "libchart.pod" . | nindent 6 -}}
 {{- end }}
