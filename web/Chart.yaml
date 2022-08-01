@@ -5,5 +5,5 @@ name: web
 version: 12.0.1
 dependencies:
   - name: libchart
-    version: 2.0.1
+    version: 2.0.2
     repository: file://../libchart
