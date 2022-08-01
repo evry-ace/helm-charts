@@ -4,5 +4,5 @@ name: java
 version: 8.0.2
 dependencies:
   - name: libchart
-    version: 2.0.1
+    version: 2.0.2
     repository: file://../libchart

@@ -14,17 +14,16 @@ spec:
       {{- include "libchart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        {{- include "libchart.labels" . | nindent 8 }}
-        {{- if .Values.podLabels }}
-        {{ toYaml .Values.podLabels | nindent 8 }}
-        {{- end -}}
       {{- if .Values.podAnnotations }}
       annotations:
         {{ toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
+      labels:
+        {{- include "libchart.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-      spec:
       {{- include "libchart.pod" . | nindent 6 -}}
 {{- end }}
 {{- end }}
