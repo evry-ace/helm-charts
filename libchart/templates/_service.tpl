@@ -11,6 +11,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
+{{- if .Values.service.headless }}
+  clusterIP: None
+{{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort | default "http" }}
