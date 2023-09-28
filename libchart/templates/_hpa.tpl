@@ -1,5 +1,5 @@
 {{- define "libchart.hpa.tpl" }}
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template "libchart.name" . }}
