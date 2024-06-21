@@ -1,8 +1,8 @@
 apiVersion: v2
 description: .NET Core Helm Chart
 name: dotnet
-version: 13.0.0
+version: 13.0.1
 dependencies:
   - name: libchart
-    version: 4.0.0
+    version: 4.0.1
     repository: file://../libchart
