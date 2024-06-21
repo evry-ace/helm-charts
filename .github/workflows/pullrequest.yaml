@@ -29,4 +29,3 @@ jobs:
               && rm -vrf linux-amd64
       - name: Test & Lint
         run: ./helm-test.sh
-        
