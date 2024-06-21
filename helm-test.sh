@@ -14,10 +14,10 @@ for chart in */Chart.yaml; do
   helm lint $chart
   [ ! -z "$(echo $chart | egrep 'dotnet|golang|java|nodejs|web')" ] && {
     [ -d data ] && rm -rf data
-    # mkdir data temp
+    mkdir data temp
     helm template $chart --output-dir temp --set istio.enabled=1 --set csi.enabled=1
     for f in temp/$chart/templates/*.yaml; do dst="data/$(basename $f | sed 's/yaml/json/g')"; yq eval $f -o json > $dst; done
     conftest test data/*
-    # rm -rf data temp
+    rm -rf data temp
   }
 done

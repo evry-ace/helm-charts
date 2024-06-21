@@ -29,6 +29,8 @@ jobs:
               && rm -vrf linux-amd64
       - name: Test & Lint
         run: ./helm-test.sh
+      - name: helm template java
+        run: helm template java --output-dir temp
       - name: Run kubeconform
         uses: docker://ghcr.io/yannh/kubeconform:latest
         with:
