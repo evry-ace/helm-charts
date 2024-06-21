@@ -97,7 +97,7 @@ podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 affinity: {}
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
@@ -196,9 +196,6 @@ volumes: []
 #        path: id_rsa.pub
 
 deployKind: deployment
-
-autoscaling:
-  enabled: false
 
 # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 dnsConfig: {}
