@@ -16,63 +16,13 @@ initContainers:
 
 containers:
   - name: {{ .Chart.Name }}
-    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-    imagePullPolicy: Always
-    {{- if .Values.command }}
-    command:
-      {{ toYaml .Values.command | nindent 6 }}
-    {{- end }}
-    {{- if .Values.args }}
-    args:
-      {{ toYaml .Values.args | nindent 6 }}
-    {{- end }}
-    {{- if or (.Values.volumeMounts) (.Values.csi) }}
-    volumeMounts:
-    {{- if .Values.volumeMounts }}
-    {{ toYaml .Values.volumeMounts | nindent 6 }}
-    {{- end }}
-    {{- if .Values.csi }}
-      - name: {{ .Values.csi.name }}
-        mountPath: {{ .Values.csi.mountPath | quote }}
-        readOnly: true
-    {{- end }}
-    {{- end }}
-    ports:
-      - name: http
-        containerPort: {{ .Values.service.targetPort | default 8080 }}
-        protocol: TCP
-      {{ if .Values.extraContainerPorts }}
-      {{ toYaml .Values.extraContainerPorts | nindent 6 }}
-      {{- end }}
-    {{- if and (.Values.liveness) (.Values.liveness.enabled) }}
-    livenessProbe:
-      httpGet:
-        path: {{ .Values.liveness.path | default "/" }}
-        port: {{ .Values.liveness.port | default 8080 }}
-      initialDelaySeconds: {{ .Values.liveness.delay | default 15 }}
-      timeoutSeconds: {{ .Values.liveness.timeout | default 15 }}
-      periodSeconds: {{ .Values.liveness.periodSeconds | default 15 }}
-    {{- end }}
-    {{- if and (.Values.readiness) (.Values.readiness.enabled) }}
-    readinessProbe:
-      httpGet:
-        path: {{ .Values.readiness.path | default "/" }}
-        port: {{ .Values.readiness.port | default 8080 }}
-      initialDelaySeconds: {{ .Values.readiness.delay | default 15 }}
-      timeoutSeconds: {{ .Values.readiness.timeout | default 15 }}
-      periodSeconds: {{ .Values.readiness.periodSeconds | default 15 }}
-    {{- end }}
-    env:
-      {{- if .Values.secrets }}
-      {{ toYaml .Values.secrets | nindent 6 }}
-      {{- end }}
-      {{- if .Values.environment }}
-      {{ toYaml .Values.environment | nindent 6 }}
-      {{- end }}
-    resources:
-      {{ toYaml .Values.resources | nindent 6 }}
-    securityContext:
-      {{- toYaml .Values.securityContext | nindent 6 }}
+  {{- include "libchart.container" .Values | indent 2 -}}
+  {{- range $sc := .Values.sidecars -}}
+    {{ "- name: " | nindent 2 }}{{ $sc.name }}
+    {{- include "libchart.container" $sc  | indent 2 }}
+  {{- end }}
+  {{- if .Values.initContainers }}
+  {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
   {{ toYaml . | nindent 4 }}

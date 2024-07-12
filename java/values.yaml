@@ -13,6 +13,49 @@ image:
   # pullSecrets:
   #   - secret1
   #   - secret2
+sidecars: {}
+#  - name: helper1
+#    image:
+#      repository: "repo"
+#      tag: "123"
+#      extraContainerPorts: [8088, 9099]
+#    securityContext:
+#      readOnlyRootFilesystem: true
+#      allowPrivilegeEscalation: false
+#    resources:
+#      limits:
+#        cpu: 100m
+#        memory: 128Mi
+#      requests:
+#        cpu: 100m
+#        memory: 128Mi
+#    environment: { }
+#    secrets: { }
+#    volumeMounts: [ ]
+#    # - name: secret-volume
+#    #   mountPath: /app/secrets
+#    #   readOnly: true
+#  - name: helper2
+#    image:
+#      repository: "repo"
+#      tag: "456"
+#      extraContainerPorts: [8088, 9099]
+#    securityContext:
+#      readOnlyRootFilesystem: true
+#      allowPrivilegeEscalation: false
+#    resources:
+#      limits:
+#        cpu: 100m
+#        memory: 128Mi
+#      requests:
+#        cpu: 100m
+#        memory: 128Mi
+#    environment: { }
+#    secrets: { }
+#    volumeMounts:
+#    - name: secret-volume
+#      mountPath: /app/secrets
+#      readOnly: true
 
 initContainers: {}
   # - name: network-proxy

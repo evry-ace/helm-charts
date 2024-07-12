@@ -2,8 +2,8 @@ apiVersion: v2
 appVersion: "1.0"
 description: Helm chart for deployment of web servers
 name: web
-version: 14.1.1
+version: 14.2.0
 dependencies:
   - name: libchart
-    version: 4.1.1
+    version: 4.2.0
     repository: file://../libchart
