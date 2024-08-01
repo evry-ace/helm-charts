@@ -8,6 +8,12 @@ imagePullSecrets:
 serviceAccountName: {{ include "libchart.serviceAccountName" . }}
 securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
+
+{{- if .Values.initContainers }}
+initContainers:
+  {{ toYaml .Values.initContainers | nindent 2 }}
+{{- end }}
+
 containers:
   - name: {{ .Chart.Name }}
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

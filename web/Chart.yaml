@@ -5,5 +5,5 @@ name: web
 version: 14.0.1
 dependencies:
   - name: libchart
-    version: 4.0.1
+    version: 4.1.0
     repository: file://../libchart
