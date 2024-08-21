@@ -15,10 +15,10 @@ image:
   #   - secret1
   #   - secret2
 
-initContainers:
-  - name: network-proxy
-    image: network-proxy:1.0
-    restartPolicy: Always
+initContainers: {}
+#  - name: network-proxy
+#    image: network-proxy:1.0
+#    restartPolicy: Always
 
 nameOverride: ""
 fullnameOverride: ""
@@ -201,9 +201,6 @@ volumes: []
 #      items:
 #      - key: ssh-pub-key
 #        path: id_rsa.pub
-
-autoscaling:
-  enabled: false
 
 # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 dnsConfig: {}

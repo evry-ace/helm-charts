@@ -14,10 +14,10 @@ image:
   #   - secret1
   #   - secret2
 
-initContainers:
-  - name: network-proxy
-    image: network-proxy:1.0
-    restartPolicy: Always
+initContainers: {}
+  # - name: network-proxy
+  #   image: network-proxy:1.0
+  #   restartPolicy: Always
 
 nameOverride: ""
 fullnameOverride: ""
