@@ -17,5 +17,5 @@ Read Helm's official [Charts Development Guide][helm-development].
 ## Testing
 
 ```
-./test.sh
+./helm-test.sh
 ```
