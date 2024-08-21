@@ -21,3 +21,4 @@ for chart in */Chart.yaml; do
     rm -rf data temp
   }
 done
+
