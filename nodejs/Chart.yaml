@@ -1,7 +1,7 @@
 apiVersion: v2
 description: Node.js Helm Chart
 name: nodejs
-version: 17.2.0
+version: 20.0.0
 dependencies:
   - name: libchart
     version: 4.2.0
